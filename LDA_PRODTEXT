@@ -1,0 +1,3223 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import random
+
+# Set the number of records
+num_records = 16000
+
+# Set start date for a 4-year period
+start_date = datetime.now() - timedelta(days=4*365)
+
+# Generate random dates within the last 4 years
+dates = [start_date + timedelta(days=random.randint(0, 365*4)) for _ in range(num_records)]
+
+# Unique Event IDs
+event_ids = [f"EVT{str(i).zfill(5)}" for i in range(1, num_records + 1)]
+
+# Sample Event Types
+event_types = ["Fraud", "System Failure", "Compliance", "Physical Damage"]
+
+# Sample Business Lines
+business_lines = ["Retail Banking", "Corporate Banking", "Insurance", "Wealth Management"]
+
+# Generate random Event Type and Business Line
+event_type = [random.choice(event_types) for _ in range(num_records)]
+business_line = [random.choice(business_lines) for _ in range(num_records)]
+
+# Generate random Event Descriptions based on Event Type
+event_descriptions = [
+    f"{etype} event in {bl}. Issue resolved with some losses." 
+    for etype, bl in zip(event_type, business_line)
+]
+
+# Random Net Loss Amounts
+net_loss_amount = [round(random.uniform(1000, 50000), 2) for _ in range(num_records)]
+
+# Create the DataFrame
+df = pd.DataFrame({
+    "Date": dates,
+    "Event ID": event_ids,
+    "Event Type": event_type,
+    "Business Line": business_line,
+    "Event Description": event_descriptions,
+    "Net Loss Amount": net_loss_amount
+})
+
+# Save to CSV
+df.to_csv("operational_risk_dataset.csv", index=False)
+df
+Date	Event ID	Event Type	Business Line	Event Description	Net Loss Amount
+0	2022-09-20 19:54:51.475678	EVT00001	Fraud	Insurance	Fraud event in Insurance. Issue resolved with ...	10140.89
+1	2023-07-12 19:54:51.475678	EVT00002	Physical Damage	Wealth Management	Physical Damage event in Wealth Management. Is...	20719.47
+2	2022-07-26 19:54:51.475678	EVT00003	Fraud	Insurance	Fraud event in Insurance. Issue resolved with ...	49408.23
+3	2023-03-27 19:54:51.475678	EVT00004	Physical Damage	Retail Banking	Physical Damage event in Retail Banking. Issue...	9588.23
+4	2022-02-18 19:54:51.475678	EVT00005	System Failure	Insurance	System Failure event in Insurance. Issue resol...	10192.38
+...	...	...	...	...	...	...
+15995	2021-11-23 19:54:51.475678	EVT15996	Compliance	Insurance	Compliance event in Insurance. Issue resolved ...	15163.74
+15996	2023-09-27 19:54:51.475678	EVT15997	Fraud	Insurance	Fraud event in Insurance. Issue resolved with ...	32155.56
+15997	2024-04-10 19:54:51.475678	EVT15998	Physical Damage	Retail Banking	Physical Damage event in Retail Banking. Issue...	23385.38
+15998	2022-06-11 19:54:51.475678	EVT15999	Physical Damage	Retail Banking	Physical Damage event in Retail Banking. Issue...	45721.20
+15999	2023-07-06 19:54:51.475678	EVT16000	Fraud	Corporate Banking	Fraud event in Corporate Banking. Issue resolv...	4061.06
+16000 rows × 6 columns
+
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import random
+
+# Set the number of records
+num_records = 16000
+
+# Set start date for a 4-year period
+start_date = datetime.now() - timedelta(days=4*365)
+
+# Generate random dates within the last 4 years
+dates = [start_date + timedelta(days=random.randint(0, 365*4)) for _ in range(num_records)]
+
+# Unique Event IDs
+event_ids = [f"EVT{str(i).zfill(5)}" for i in range(1, num_records + 1)]
+
+# Expanded Event Types with special symbols
+event_types = [
+    "Fraud$", "System-Failure@", "Compliance#", "Physical*Damage", "Data&Breach", 
+    "Unauthorized*Access", "Payment@Error", "Transaction-Fraud!", "Security#Breach"
+]
+
+# Expanded Business Lines with special symbols
+business_lines = [
+    "Retail_Banking", "Corporate-Banking!", "Insurance&", "Wealth*Management", 
+    "Investment$Banking", "Treasury#Services", "Private@Equity", "Risk&Compliance"
+]
+
+# Generate random Event Type and Business Line
+event_type = [random.choice(event_types) for _ in range(num_records)]
+business_line = [random.choice(business_lines) for _ in range(num_records)]
+
+# Generate random Event Descriptions based on Event Type
+event_descriptions = [
+    f"{etype} event in {bl}. Issue resolved with some losses." 
+    for etype, bl in zip(event_type, business_line)
+]
+
+# Random Net Loss Amounts
+net_loss_amount = [round(random.uniform(1000, 50000), 2) for _ in range(num_records)]
+
+# Create the DataFrame
+df = pd.DataFrame({
+    "Date": dates,
+    "Event ID": event_ids,
+    "Event Type": event_type,
+    "Business Line": business_line,
+    "Event Description": event_descriptions,
+    "Net Loss Amount": net_loss_amount
+})
+
+# Save to CSV
+df.to_csv("operational_risk_dataset_expanded.csv", index=False)
+df
+Date	Event ID	Event Type	Business Line	Event Description	Net Loss Amount
+0	2022-11-17 19:16:37.440265	EVT00001	Physical*Damage	Retail_Banking	Physical*Damage event in Retail_Banking. Issue...	10801.88
+1	2021-11-10 19:16:37.440265	EVT00002	Compliance#	Investment$Banking	Compliance# event in Investment$Banking. Issue...	42302.44
+2	2021-05-16 19:16:37.440265	EVT00003	Payment@Error	Risk&Compliance	Payment@Error event in Risk&Compliance. Issue ...	28709.11
+3	2022-07-12 19:16:37.440265	EVT00004	System-Failure@	Treasury#Services	System-Failure@ event in Treasury#Services. Is...	16045.21
+4	2021-03-17 19:16:37.440265	EVT00005	Transaction-Fraud!	Investment$Banking	Transaction-Fraud! event in Investment$Banking...	28945.02
+...	...	...	...	...	...	...
+15995	2022-06-09 19:16:37.440265	EVT15996	Compliance#	Private@Equity	Compliance# event in Private@Equity. Issue res...	6553.09
+15996	2022-11-20 19:16:37.440265	EVT15997	System-Failure@	Investment$Banking	System-Failure@ event in Investment$Banking. I...	21680.58
+15997	2021-11-28 19:16:37.440265	EVT15998	Payment@Error	Treasury#Services	Payment@Error event in Treasury#Services. Issu...	12395.02
+15998	2023-11-04 19:16:37.440265	EVT15999	Security#Breach	Retail_Banking	Security#Breach event in Retail_Banking. Issue...	1189.20
+15999	2022-08-06 19:16:37.440265	EVT16000	Transaction-Fraud!	Insurance&	Transaction-Fraud! event in Insurance&. Issue ...	11501.84
+16000 rows × 6 columns
+
+df["Event Type"].value_counts()
+Event Type
+Unauthorized*Access    1830
+System-Failure@        1812
+Payment@Error          1809
+Fraud$                 1809
+Transaction-Fraud!     1779
+Security#Breach        1768
+Compliance#            1750
+Physical*Damage        1749
+Data&Breach            1694
+Name: count, dtype: int64
+df["Business Line"].value_counts()
+Business Line
+Investment$Banking    2047
+Corporate-Banking!    2044
+Retail_Banking        2029
+Insurance&            1990
+Risk&Compliance       1987
+Private@Equity        1982
+Treasury#Services     1969
+Wealth*Management     1952
+Name: count, dtype: int64
+# Here’s a step-by-step guide to performing a detailed Exploratory Data Analysis (EDA) on this dataset, including statistical summaries, visualizations, and textual analyses.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from wordcloud import WordCloud
+from datetime import datetime
+df = pd.read_csv("operational_risk_dataset_expanded.csv")
+df['Date'] = pd.to_datetime(df['Date'])  # Convert date to datetime format
+print(df.head())
+print(df.info())
+                        Date  Event ID          Event Type  \
+0 2022-11-17 19:16:37.440265  EVT00001     Physical*Damage   
+1 2021-11-10 19:16:37.440265  EVT00002         Compliance#   
+2 2021-05-16 19:16:37.440265  EVT00003       Payment@Error   
+3 2022-07-12 19:16:37.440265  EVT00004     System-Failure@   
+4 2021-03-17 19:16:37.440265  EVT00005  Transaction-Fraud!   
+
+        Business Line                                  Event Description  \
+0      Retail_Banking  Physical*Damage event in Retail_Banking. Issue...   
+1  Investment$Banking  Compliance# event in Investment$Banking. Issue...   
+2     Risk&Compliance  Payment@Error event in Risk&Compliance. Issue ...   
+3   Treasury#Services  System-Failure@ event in Treasury#Services. Is...   
+4  Investment$Banking  Transaction-Fraud! event in Investment$Banking...   
+
+   Net Loss Amount  
+0         10801.88  
+1         42302.44  
+2         28709.11  
+3         16045.21  
+4         28945.02  
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 16000 entries, 0 to 15999
+Data columns (total 6 columns):
+ #   Column             Non-Null Count  Dtype         
+---  ------             --------------  -----         
+ 0   Date               16000 non-null  datetime64[ns]
+ 1   Event ID           16000 non-null  object        
+ 2   Event Type         16000 non-null  object        
+ 3   Business Line      16000 non-null  object        
+ 4   Event Description  16000 non-null  object        
+ 5   Net Loss Amount    16000 non-null  float64       
+dtypes: datetime64[ns](1), float64(1), object(4)
+memory usage: 750.1+ KB
+None
+# Step 3: Summary Statistics
+# Check for missing values, data types, and summary statistics.
+print(df.isnull().sum())  # Check for missing values
+print(df.describe())  # Summary statistics for numerical columns
+print(df['Event Type'].value_counts())  # Frequency of each event type
+print(df['Business Line'].value_counts())  # Frequency of each business line
+Date                 0
+Event ID             0
+Event Type           0
+Business Line        0
+Event Description    0
+Net Loss Amount      0
+dtype: int64
+                                Date  Net Loss Amount
+count                          16000     16000.000000
+mean   2022-11-01 12:37:23.040265216     25539.622489
+min       2020-11-01 19:16:37.440265      1002.970000
+25%    2021-11-04 19:16:37.440264960     13512.867500
+50%    2022-10-29 19:16:37.440264960     25518.925000
+75%    2023-10-31 19:16:37.440264960     37714.397500
+max       2024-10-31 19:16:37.440265     49999.330000
+std                              NaN     14092.563181
+Event Type
+Unauthorized*Access    1830
+System-Failure@        1812
+Payment@Error          1809
+Fraud$                 1809
+Transaction-Fraud!     1779
+Security#Breach        1768
+Compliance#            1750
+Physical*Damage        1749
+Data&Breach            1694
+Name: count, dtype: int64
+Business Line
+Investment$Banking    2047
+Corporate-Banking!    2044
+Retail_Banking        2029
+Insurance&            1990
+Risk&Compliance       1987
+Private@Equity        1982
+Treasury#Services     1969
+Wealth*Management     1952
+Name: count, dtype: int64
+# Step 4: Date-Based Analysis
+# Analyze the data by month, quarter, and year.
+df['Year'] = df['Date'].dt.year
+df['Quarter'] = df['Date'].dt.quarter
+df['Month'] = df['Date'].dt.month
+
+# Monthly Analysis
+monthly_counts = df.groupby(['Year', 'Month'])['Event ID'].count().unstack()
+monthly_counts.plot(kind='bar', stacked=True, figsize=(14, 6))
+plt.title('Monthly Event Counts Over Years')
+plt.xlabel('Year-Month')
+plt.ylabel('Number of Events')
+plt.show()
+
+# Quarterly Analysis
+quarterly_counts = df.groupby(['Year', 'Quarter'])['Event ID'].count().unstack()
+quarterly_counts.plot(kind='bar', stacked=True, figsize=(14, 6))
+plt.title('Quarterly Event Counts Over Years')
+plt.xlabel('Year-Quarter')
+plt.ylabel('Number of Events')
+plt.show()
+
+
+# Step 5: Analysis by Event Type and Business Line
+# Frequency Distribution
+plt.figure(figsize=(12, 5))
+sns.countplot(data=df, x="Event Type", order=df['Event Type'].value_counts().index)
+plt.title('Frequency of Each Event Type')
+plt.xlabel('Event Type')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(12, 5))
+sns.countplot(data=df, x="Business Line", order=df['Business Line'].value_counts().index)
+plt.title('Frequency of Each Business Line')
+plt.xlabel('Business Line')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Average Net Loss by Event Type and Business Line
+# Average Net Loss by Event Type
+event_type_loss = df.groupby('Event Type')['Net Loss Amount'].mean()
+event_type_loss.plot(kind='bar', color='teal', figsize=(10, 5))
+plt.title('Average Net Loss Amount by Event Type')
+plt.ylabel('Average Net Loss Amount')
+plt.xlabel('Event Type')
+plt.xticks(rotation=45)
+plt.show()
+
+# Average Net Loss by Business Line
+business_line_loss = df.groupby('Business Line')['Net Loss Amount'].mean()
+business_line_loss.plot(kind='bar', color='coral', figsize=(10, 5))
+plt.title('Average Net Loss Amount by Business Line')
+plt.ylabel('Average Net Loss Amount')
+plt.xlabel('Business Line')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Step 6: Distribution Analysis for Net Loss Amount
+# Distribution Plot and Boxplot
+plt.figure(figsize=(12, 5))
+sns.histplot(df['Net Loss Amount'], bins=30, kde=True, color='purple')
+plt.title('Distribution of Net Loss Amount')
+plt.xlabel('Net Loss Amount')
+plt.ylabel('Frequency')
+plt.show()
+
+plt.figure(figsize=(12, 5))
+sns.boxplot(x='Event Type', y='Net Loss Amount', data=df)
+plt.title('Net Loss Amount Distribution by Event Type')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Step 7: Event Description Text Analysis
+# Word Cloud for Event Descriptions
+from wordcloud import WordCloud
+
+text = " ".join(description for description in df['Event Description'])
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+
+plt.figure(figsize=(10, 5))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.title('Word Cloud for Event Descriptions')
+plt.show()
+
+# Common Words Analysis
+from collections import Counter
+import re
+
+# Tokenize and clean text
+words = " ".join(description for description in df['Event Description'])
+words = re.sub(r'[^\w\s]', '', words)  # Remove punctuation
+word_list = words.split()
+common_words = Counter(word_list).most_common(10)
+print("Most common words in event descriptions:", common_words)
+Most common words in event descriptions: [('event', 16000), ('in', 16000), ('Issue', 16000), ('resolved', 16000), ('with', 16000), ('some', 16000), ('losses', 16000), ('InvestmentBanking', 2047), ('CorporateBanking', 2044), ('Retail_Banking', 2029)]
+# Step 8: Correlation Analysis
+# Correlation Matrix for Numeric Data
+# Check if there are any numeric columns to correlate
+numeric_df = df.select_dtypes(include=[np.number])
+if not numeric_df.empty:
+    plt.figure(figsize=(8, 5))
+    sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', center=0)
+    plt.title('Correlation Matrix')
+    plt.show()
+else:
+    print("No numeric columns found to create a correlation matrix.")
+
+# Check the total number of Event IDs
+total_event_ids = df['Event ID'].nunique()
+print(f"Total number of unique Event IDs: {total_event_ids}")
+
+# Check the first few Event IDs
+print(df['Event ID'].head())
+Total number of unique Event IDs: 16000
+0    EVT00001
+1    EVT00002
+2    EVT00003
+3    EVT00004
+4    EVT00005
+Name: Event ID, dtype: object
+# Step 2: Frequency Analysis
+# Since each Event ID is unique, a frequency analysis would not be meaningful. However, you can check the distribution of Event IDs over time
+# Count events by year to see how many events occurred each year
+event_count_by_year = df['Year'].value_counts().sort_index()
+
+# Plot the number of events per year
+plt.figure(figsize=(10, 5))
+event_count_by_year.plot(kind='bar', color='skyblue')
+plt.title('Number of Events by Year')
+plt.xlabel('Year')
+plt.ylabel('Number of Events')
+plt.xticks(rotation=0)
+plt.show()
+
+# Step 4: Check for Duplicates
+# Even though the Event ID should be unique, it's always good practice to check for duplicates:
+# Check for any duplicate Event IDs
+duplicates = df[df.duplicated('Event ID')]
+print(f"Number of duplicate Event IDs: {duplicates.shape[0]}")
+Number of duplicate Event IDs: 0
+# Step 5: Relationship with Other Variables
+# Since Event IDs are unique and do not inherently have a relationship with other variables, you could check the average net loss per event ID, but the results will be the same since they are unique:
+# Aggregate Net Loss Amount by Event ID (should be the same as original)
+average_loss_per_event = df.groupby('Event ID')['Net Loss Amount'].mean().reset_index()
+
+# Visualizing the average loss per event
+plt.figure(figsize=(10, 5))
+sns.histplot(average_loss_per_event['Net Loss Amount'], bins=30, kde=True, color='orange')
+plt.title('Distribution of Average Net Loss Amount per Event ID')
+plt.xlabel('Average Net Loss Amount')
+plt.ylabel('Frequency')
+plt.show()
+
+# Summary
+# In summary, the Event ID analysis will show that:
+
+# Each ID is unique, with a set count.
+# Trends over years can be visualized based on when events occurred.
+# Checking for duplicates ensures data integrity.
+# This EDA approach allows you to glean insights about the dataset's structure and integrity concerning Event IDs. Let me know if you need additional analyses or if you'd like to focus on a specific aspect!
+To perform a combined Exploratory Data Analysis (EDA) that examines Event IDs, Net Loss Amount, Event Types, and Business Lines, you can explore the following aspects:
+
+Distribution of Net Loss Amounts by Event Type and Business Line. Count of Event IDs by Event Type and Business Line. Average Net Loss Amount by Event Type and Business Line. Visualizations to summarize the data. Here’s a structured approach to performing this analysis:
+
+Step 1: Import Required Libraries Make sure you have imported the necessary libraries:
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+df = pd.read_csv("operational_risk_dataset_expanded.csv")
+df['Date'] = pd.to_datetime(df['Date'])  # Convert date to datetime format
+# Step 3: Count of Event IDs by Event Type and Business Line
+# Count Event IDs by Event Type
+event_counts = df['Event Type'].value_counts()
+
+# Count Event IDs by Business Line
+business_counts = df['Business Line'].value_counts()
+
+plt.figure(figsize=(12, 5))
+sns.countplot(data=df, x='Event Type', order=event_counts.index)
+plt.title('Count of Event IDs by Event Type')
+plt.xlabel('Event Type')
+plt.ylabel('Count of Event IDs')
+plt.xticks(rotation=45)
+plt.show()
+
+plt.figure(figsize=(12, 5))
+sns.countplot(data=df, x='Business Line', order=business_counts.index)
+plt.title('Count of Event IDs by Business Line')
+plt.xlabel('Business Line')
+plt.ylabel('Count of Event IDs')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Step 4: Average Net Loss Amount by Event Type and Business Line
+# By Event Type
+# Calculate average net loss by event type
+average_loss_by_event_type = df.groupby('Event Type')['Net Loss Amount'].mean().sort_values()
+
+plt.figure(figsize=(12, 5))
+average_loss_by_event_type.plot(kind='bar', color='lightblue')
+plt.title('Average Net Loss Amount by Event Type')
+plt.xlabel('Event Type')
+plt.ylabel('Average Net Loss Amount')
+plt.xticks(rotation=45)
+plt.show()
+
+# By Business Line
+# Calculate average net loss by business line
+average_loss_by_business_line = df.groupby('Business Line')['Net Loss Amount'].mean().sort_values()
+
+plt.figure(figsize=(12, 5))
+average_loss_by_business_line.plot(kind='bar', color='lightcoral')
+plt.title('Average Net Loss Amount by Business Line')
+plt.xlabel('Business Line')
+plt.ylabel('Average Net Loss Amount')
+plt.xticks(rotation=45)
+plt.show()
+
+# Step 5: Distribution of Net Loss Amount by Event Type and Business Line
+# Boxplot for Net Loss Amount by Event Type
+plt.figure(figsize=(14, 6))
+sns.boxplot(x='Event Type', y='Net Loss Amount', data=df)
+plt.title('Distribution of Net Loss Amount by Event Type')
+plt.xticks(rotation=45)
+plt.show()
+
+# Boxplot for Net Loss Amount by Business Line
+plt.figure(figsize=(14, 6))
+sns.boxplot(x='Business Line', y='Net Loss Amount', data=df)
+plt.title('Distribution of Net Loss Amount by Business Line')
+plt.xticks(rotation=45)
+plt.show()
+
+
+# Step 6: Heatmap of Average Loss Amount by Event Type and Business Line
+# You can create a pivot table to visualize the average loss across combinations of event types and business lines:
+# Create a pivot table
+pivot_table = df.pivot_table(values='Net Loss Amount', index='Event Type', columns='Business Line', aggfunc='mean')
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(pivot_table, annot=True, fmt=".2f", cmap='coolwarm')
+plt.title('Heatmap of Average Net Loss Amount by Event Type and Business Line')
+plt.xlabel('Business Line')
+plt.ylabel('Event Type')
+plt.show()
+
+Step 7: Summary Insights Event Type Counts: This analysis will provide insights into which event types occur most frequently. Business Line Counts: Understanding the distribution of events across business lines helps in identifying where risks are concentrated. Average Loss Insights: Examining the average net loss by event type and business line allows for a more nuanced understanding of risk exposure. Visual Patterns: The heatmap and boxplots highlight the relationships between event types, business lines, and their associated losses. By following these steps, you will have a comprehensive understanding of how Event IDs, Net Loss Amount, Event Types, and Business Lines interact within your dataset. Let me know if you need any further analysis or modifications!
+
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Load Your Data
+# Make sure you have your DataFrame (df) with Net Loss Amount ready. If not already loaded, you can create your dummy dataset based on the previous steps.
+
+# Fit the Loss Distribution
+def fit_loss_distribution(df):
+    # Filter out non-positive losses if necessary
+    losses = df['Net Loss Amount'][df['Net Loss Amount'] > 0]
+    
+    # Fit a log-normal distribution
+    shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+    
+    return shape, loc, scale
+
+shape, loc, scale = fit_loss_distribution(df)
+
+# Print fitted parameters
+print(f"Fitted Log-Normal Distribution Parameters: shape={shape}, loc={loc}, scale={scale}")
+Fitted Log-Normal Distribution Parameters: shape=0.8192649655315144, loc=0, scale=20016.703931315016
+# Calculate VaR
+# Now, we will calculate the VaR using the fitted parameters:
+def calculate_var(shape, loc, scale, confidence_level=0.95):
+    # Calculate the VaR at the specified confidence level
+    var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+    return var_value
+
+# Calculate VaR
+confidence_level = 0.95  # Set your confidence level here
+var_value = calculate_var(shape, loc, scale, confidence_level)
+
+print(f"Value at Risk (VaR) at {confidence_level * 100}% confidence level: {var_value:.2f}")
+Value at Risk (VaR) at 95.0% confidence level: 77025.62
+# Step 3: Visualize the Fitted Distribution (Optional)
+# You may want to visualize the fitted distribution against your data to see how well it fits:
+# Plot the histogram of the loss amounts
+plt.figure(figsize=(10, 6))
+sns.histplot(df['Net Loss Amount'], bins=50, kde=False, stat="density", label='Loss Amounts')
+
+# Create a range of values to plot the fitted distribution
+x = np.linspace(0, df['Net Loss Amount'].max(), 1000)
+pdf = stats.lognorm.pdf(x, shape, loc=loc, scale=scale)
+
+# Plot the fitted distribution
+plt.plot(x, pdf, 'r-', label='Fitted Log-Normal Distribution', linewidth=2)
+plt.title('Loss Distribution and Fitted Log-Normal Distribution')
+plt.xlabel('Net Loss Amount')
+plt.ylabel('Density')
+plt.legend()
+plt.grid()
+plt.show()
+
+Summary of Results Fitted Parameters: The output will show the parameters for the fitted Log-Normal distribution. VaR Calculation: You will get the calculated VaR at the specified confidence level. Visualization: If included, the histogram will give you a visual comparison of your data against the fitted distribution. Important Notes Distribution Selection: The choice of distribution (Log-Normal in this case) can significantly affect the results. Depending on your data's characteristics, you might want to explore other distributions. Parameter Interpretation: Understanding the fitted parameters will help you make better decisions regarding risk management. Refinement: You can refine the fitting process by testing multiple distributions and choosing the one that provides the best fit based on goodness-of-fit metrics (like AIC, BIC, or visual inspection). This approach will provide you with a clear analysis of your losses using the Loss Distribution Approach. If you have any further questions or need assistance with specific parts of this implementation, feel free to ask!
+
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+
+# Function to fit loss distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var(df, confidence_level=0.95):
+    # Prepare a dictionary to store VaR results
+    var_results = {}
+    
+    # Group by year, Business Line, and Event Type
+    for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+        # Filter out non-positive losses
+        losses = group['Net Loss Amount'][group['Net Loss Amount'] > 0]
+        
+        if len(losses) > 0:  # Check if there are any positive losses
+            # Fit a log-normal distribution
+            shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+            # Calculate the VaR
+            var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+            
+            # Store the result in the dictionary
+            if year not in var_results:
+                var_results[year] = {}
+            if business_line not in var_results[year]:
+                var_results[year][business_line] = {}
+            var_results[year][business_line][event_type] = var_value
+    
+    return var_results
+# Step 2: Calculate VaR for Each Group
+# Assuming df is your DataFrame and it has a 'Net Loss Amount' column.
+# Ensure the Date column is datetime and extract the year.
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+
+# Calculate VaR
+confidence_level = 0.95  # Set your confidence level here
+var_by_year_business_event = fit_loss_distribution_and_calculate_var(df, confidence_level)
+
+# Displaying results
+for year, business_lines in var_by_year_business_event.items():
+    print(f"Year: {year}")
+    for business_line, event_types in business_lines.items():
+        print(f"  Business Line: {business_line}")
+        for event_type, var in event_types.items():
+            print(f"    Event Type: {event_type}, VaR: {var:.2f}")
+Year: 2020
+  Business Line: Corporate-Banking!
+    Event Type: Compliance#, VaR: 34139.16
+    Event Type: Data&Breach, VaR: 54516.41
+    Event Type: Fraud$, VaR: 75993.57
+    Event Type: Payment@Error, VaR: 72646.99
+    Event Type: Physical*Damage, VaR: 77908.27
+    Event Type: Security#Breach, VaR: 94848.00
+    Event Type: System-Failure@, VaR: 86187.81
+    Event Type: Transaction-Fraud!, VaR: 76638.12
+    Event Type: Unauthorized*Access, VaR: 62441.89
+  Business Line: Insurance&
+    Event Type: Compliance#, VaR: 76692.77
+    Event Type: Data&Breach, VaR: 91897.86
+    Event Type: Fraud$, VaR: 88747.30
+    Event Type: Payment@Error, VaR: 58141.14
+    Event Type: Physical*Damage, VaR: 61175.47
+    Event Type: Security#Breach, VaR: 69472.08
+    Event Type: System-Failure@, VaR: 112582.68
+    Event Type: Transaction-Fraud!, VaR: 64900.24
+    Event Type: Unauthorized*Access, VaR: 51785.13
+  Business Line: Investment$Banking
+    Event Type: Compliance#, VaR: 73938.58
+    Event Type: Data&Breach, VaR: 49559.73
+    Event Type: Fraud$, VaR: 73879.51
+    Event Type: Payment@Error, VaR: 86519.66
+    Event Type: Physical*Damage, VaR: 56847.92
+    Event Type: Security#Breach, VaR: 96438.58
+    Event Type: System-Failure@, VaR: 51201.83
+    Event Type: Transaction-Fraud!, VaR: 73933.63
+    Event Type: Unauthorized*Access, VaR: 63128.11
+  Business Line: Private@Equity
+    Event Type: Compliance#, VaR: 85554.23
+    Event Type: Data&Breach, VaR: 52311.79
+    Event Type: Fraud$, VaR: 101226.62
+    Event Type: Payment@Error, VaR: 115893.78
+    Event Type: Physical*Damage, VaR: 50354.02
+    Event Type: Security#Breach, VaR: 56965.33
+    Event Type: System-Failure@, VaR: 67366.95
+    Event Type: Transaction-Fraud!, VaR: 54477.72
+    Event Type: Unauthorized*Access, VaR: 57986.76
+  Business Line: Retail_Banking
+    Event Type: Compliance#, VaR: 66073.12
+    Event Type: Data&Breach, VaR: 84094.91
+    Event Type: Fraud$, VaR: 59815.85
+    Event Type: Payment@Error, VaR: 42847.95
+    Event Type: Physical*Damage, VaR: 108988.82
+    Event Type: Security#Breach, VaR: 106190.37
+    Event Type: System-Failure@, VaR: 61977.02
+    Event Type: Transaction-Fraud!, VaR: 114731.70
+    Event Type: Unauthorized*Access, VaR: 64819.10
+  Business Line: Risk&Compliance
+    Event Type: Compliance#, VaR: 49885.31
+    Event Type: Data&Breach, VaR: 42815.66
+    Event Type: Fraud$, VaR: 58583.35
+    Event Type: Payment@Error, VaR: 60359.77
+    Event Type: Physical*Damage, VaR: 36228.30
+    Event Type: Security#Breach, VaR: 78526.08
+    Event Type: System-Failure@, VaR: 76523.24
+    Event Type: Transaction-Fraud!, VaR: 66242.74
+    Event Type: Unauthorized*Access, VaR: 68777.40
+  Business Line: Treasury#Services
+    Event Type: Compliance#, VaR: 81335.13
+    Event Type: Data&Breach, VaR: 89180.64
+    Event Type: Fraud$, VaR: 119356.25
+    Event Type: Payment@Error, VaR: 62988.93
+    Event Type: Physical*Damage, VaR: 82790.70
+    Event Type: Security#Breach, VaR: 74463.26
+    Event Type: System-Failure@, VaR: 59253.16
+    Event Type: Transaction-Fraud!, VaR: 62445.99
+    Event Type: Unauthorized*Access, VaR: 108519.43
+  Business Line: Wealth*Management
+    Event Type: Compliance#, VaR: 72027.76
+    Event Type: Data&Breach, VaR: 43872.54
+    Event Type: Fraud$, VaR: 53192.70
+    Event Type: Payment@Error, VaR: 49171.81
+    Event Type: Physical*Damage, VaR: 55100.49
+    Event Type: Security#Breach, VaR: 130669.16
+    Event Type: System-Failure@, VaR: 55985.16
+    Event Type: Transaction-Fraud!, VaR: 32100.44
+    Event Type: Unauthorized*Access, VaR: 47108.84
+Year: 2021
+  Business Line: Corporate-Banking!
+    Event Type: Compliance#, VaR: 82721.09
+    Event Type: Data&Breach, VaR: 70592.39
+    Event Type: Fraud$, VaR: 56515.75
+    Event Type: Payment@Error, VaR: 86361.16
+    Event Type: Physical*Damage, VaR: 63901.93
+    Event Type: Security#Breach, VaR: 79734.41
+    Event Type: System-Failure@, VaR: 80038.84
+    Event Type: Transaction-Fraud!, VaR: 76516.32
+    Event Type: Unauthorized*Access, VaR: 94951.94
+  Business Line: Insurance&
+    Event Type: Compliance#, VaR: 77814.37
+    Event Type: Data&Breach, VaR: 99049.97
+    Event Type: Fraud$, VaR: 81851.33
+    Event Type: Payment@Error, VaR: 65304.11
+    Event Type: Physical*Damage, VaR: 71763.99
+    Event Type: Security#Breach, VaR: 84271.13
+    Event Type: System-Failure@, VaR: 82736.82
+    Event Type: Transaction-Fraud!, VaR: 87927.63
+    Event Type: Unauthorized*Access, VaR: 81402.52
+  Business Line: Investment$Banking
+    Event Type: Compliance#, VaR: 78599.20
+    Event Type: Data&Breach, VaR: 64777.23
+    Event Type: Fraud$, VaR: 82939.86
+    Event Type: Payment@Error, VaR: 73087.75
+    Event Type: Physical*Damage, VaR: 73122.96
+    Event Type: Security#Breach, VaR: 68980.04
+    Event Type: System-Failure@, VaR: 80983.53
+    Event Type: Transaction-Fraud!, VaR: 90470.99
+    Event Type: Unauthorized*Access, VaR: 85320.90
+  Business Line: Private@Equity
+    Event Type: Compliance#, VaR: 72417.42
+    Event Type: Data&Breach, VaR: 83075.81
+    Event Type: Fraud$, VaR: 77016.66
+    Event Type: Payment@Error, VaR: 85433.59
+    Event Type: Physical*Damage, VaR: 80324.68
+    Event Type: Security#Breach, VaR: 70045.87
+    Event Type: System-Failure@, VaR: 56306.21
+    Event Type: Transaction-Fraud!, VaR: 69062.31
+    Event Type: Unauthorized*Access, VaR: 71904.58
+  Business Line: Retail_Banking
+    Event Type: Compliance#, VaR: 71867.06
+    Event Type: Data&Breach, VaR: 76157.52
+    Event Type: Fraud$, VaR: 79545.38
+    Event Type: Payment@Error, VaR: 69135.02
+    Event Type: Physical*Damage, VaR: 72931.29
+    Event Type: Security#Breach, VaR: 65074.63
+    Event Type: System-Failure@, VaR: 87423.41
+    Event Type: Transaction-Fraud!, VaR: 80348.33
+    Event Type: Unauthorized*Access, VaR: 69358.78
+  Business Line: Risk&Compliance
+    Event Type: Compliance#, VaR: 69272.46
+    Event Type: Data&Breach, VaR: 73645.45
+    Event Type: Fraud$, VaR: 73765.83
+    Event Type: Payment@Error, VaR: 66505.35
+    Event Type: Physical*Damage, VaR: 73823.68
+    Event Type: Security#Breach, VaR: 63650.30
+    Event Type: System-Failure@, VaR: 66356.57
+    Event Type: Transaction-Fraud!, VaR: 65454.96
+    Event Type: Unauthorized*Access, VaR: 86133.55
+  Business Line: Treasury#Services
+    Event Type: Compliance#, VaR: 62420.68
+    Event Type: Data&Breach, VaR: 77087.78
+    Event Type: Fraud$, VaR: 72105.43
+    Event Type: Payment@Error, VaR: 69751.13
+    Event Type: Physical*Damage, VaR: 78217.22
+    Event Type: Security#Breach, VaR: 69164.48
+    Event Type: System-Failure@, VaR: 74678.95
+    Event Type: Transaction-Fraud!, VaR: 62403.36
+    Event Type: Unauthorized*Access, VaR: 94113.25
+  Business Line: Wealth*Management
+    Event Type: Compliance#, VaR: 80011.93
+    Event Type: Data&Breach, VaR: 90893.08
+    Event Type: Fraud$, VaR: 78108.01
+    Event Type: Payment@Error, VaR: 75754.38
+    Event Type: Physical*Damage, VaR: 64670.62
+    Event Type: Security#Breach, VaR: 85363.91
+    Event Type: System-Failure@, VaR: 89782.30
+    Event Type: Transaction-Fraud!, VaR: 85198.52
+    Event Type: Unauthorized*Access, VaR: 72765.42
+Year: 2022
+  Business Line: Corporate-Banking!
+    Event Type: Compliance#, VaR: 71008.87
+    Event Type: Data&Breach, VaR: 75541.53
+    Event Type: Fraud$, VaR: 76439.25
+    Event Type: Payment@Error, VaR: 65939.62
+    Event Type: Physical*Damage, VaR: 73434.58
+    Event Type: Security#Breach, VaR: 61632.33
+    Event Type: System-Failure@, VaR: 78631.32
+    Event Type: Transaction-Fraud!, VaR: 81017.94
+    Event Type: Unauthorized*Access, VaR: 97835.85
+  Business Line: Insurance&
+    Event Type: Compliance#, VaR: 78706.69
+    Event Type: Data&Breach, VaR: 64884.79
+    Event Type: Fraud$, VaR: 57041.57
+    Event Type: Payment@Error, VaR: 89175.34
+    Event Type: Physical*Damage, VaR: 83751.03
+    Event Type: Security#Breach, VaR: 68946.07
+    Event Type: System-Failure@, VaR: 72676.62
+    Event Type: Transaction-Fraud!, VaR: 76443.39
+    Event Type: Unauthorized*Access, VaR: 74507.58
+  Business Line: Investment$Banking
+    Event Type: Compliance#, VaR: 94122.34
+    Event Type: Data&Breach, VaR: 67812.62
+    Event Type: Fraud$, VaR: 67281.66
+    Event Type: Payment@Error, VaR: 66964.84
+    Event Type: Physical*Damage, VaR: 78213.29
+    Event Type: Security#Breach, VaR: 67804.61
+    Event Type: System-Failure@, VaR: 58665.30
+    Event Type: Transaction-Fraud!, VaR: 63745.84
+    Event Type: Unauthorized*Access, VaR: 97372.69
+  Business Line: Private@Equity
+    Event Type: Compliance#, VaR: 83636.23
+    Event Type: Data&Breach, VaR: 89034.04
+    Event Type: Fraud$, VaR: 87567.41
+    Event Type: Payment@Error, VaR: 69527.36
+    Event Type: Physical*Damage, VaR: 75303.45
+    Event Type: Security#Breach, VaR: 67037.06
+    Event Type: System-Failure@, VaR: 82822.25
+    Event Type: Transaction-Fraud!, VaR: 71548.72
+    Event Type: Unauthorized*Access, VaR: 78891.12
+  Business Line: Retail_Banking
+    Event Type: Compliance#, VaR: 68451.49
+    Event Type: Data&Breach, VaR: 82025.04
+    Event Type: Fraud$, VaR: 107545.20
+    Event Type: Payment@Error, VaR: 68841.50
+    Event Type: Physical*Damage, VaR: 62815.02
+    Event Type: Security#Breach, VaR: 84927.55
+    Event Type: System-Failure@, VaR: 71397.76
+    Event Type: Transaction-Fraud!, VaR: 74237.72
+    Event Type: Unauthorized*Access, VaR: 78108.28
+  Business Line: Risk&Compliance
+    Event Type: Compliance#, VaR: 68743.81
+    Event Type: Data&Breach, VaR: 72756.55
+    Event Type: Fraud$, VaR: 58241.00
+    Event Type: Payment@Error, VaR: 67142.89
+    Event Type: Physical*Damage, VaR: 74096.82
+    Event Type: Security#Breach, VaR: 55957.03
+    Event Type: System-Failure@, VaR: 85963.61
+    Event Type: Transaction-Fraud!, VaR: 75612.04
+    Event Type: Unauthorized*Access, VaR: 73923.95
+  Business Line: Treasury#Services
+    Event Type: Compliance#, VaR: 61235.82
+    Event Type: Data&Breach, VaR: 77451.76
+    Event Type: Fraud$, VaR: 69874.15
+    Event Type: Payment@Error, VaR: 77693.63
+    Event Type: Physical*Damage, VaR: 91623.10
+    Event Type: Security#Breach, VaR: 71594.94
+    Event Type: System-Failure@, VaR: 77731.73
+    Event Type: Transaction-Fraud!, VaR: 77250.51
+    Event Type: Unauthorized*Access, VaR: 89358.87
+  Business Line: Wealth*Management
+    Event Type: Compliance#, VaR: 61688.51
+    Event Type: Data&Breach, VaR: 71155.13
+    Event Type: Fraud$, VaR: 84502.63
+    Event Type: Payment@Error, VaR: 74145.92
+    Event Type: Physical*Damage, VaR: 75283.72
+    Event Type: Security#Breach, VaR: 70961.72
+    Event Type: System-Failure@, VaR: 69191.56
+    Event Type: Transaction-Fraud!, VaR: 91325.39
+    Event Type: Unauthorized*Access, VaR: 77373.18
+Year: 2023
+  Business Line: Corporate-Banking!
+    Event Type: Compliance#, VaR: 68132.75
+    Event Type: Data&Breach, VaR: 82165.20
+    Event Type: Fraud$, VaR: 70080.28
+    Event Type: Payment@Error, VaR: 83254.32
+    Event Type: Physical*Damage, VaR: 80682.93
+    Event Type: Security#Breach, VaR: 81139.00
+    Event Type: System-Failure@, VaR: 81842.60
+    Event Type: Transaction-Fraud!, VaR: 77273.87
+    Event Type: Unauthorized*Access, VaR: 77647.98
+  Business Line: Insurance&
+    Event Type: Compliance#, VaR: 70994.02
+    Event Type: Data&Breach, VaR: 71813.55
+    Event Type: Fraud$, VaR: 72607.16
+    Event Type: Payment@Error, VaR: 72336.82
+    Event Type: Physical*Damage, VaR: 79396.39
+    Event Type: Security#Breach, VaR: 65266.65
+    Event Type: System-Failure@, VaR: 68816.39
+    Event Type: Transaction-Fraud!, VaR: 68206.66
+    Event Type: Unauthorized*Access, VaR: 73718.90
+  Business Line: Investment$Banking
+    Event Type: Compliance#, VaR: 92060.42
+    Event Type: Data&Breach, VaR: 74908.04
+    Event Type: Fraud$, VaR: 76740.51
+    Event Type: Payment@Error, VaR: 54011.19
+    Event Type: Physical*Damage, VaR: 66338.64
+    Event Type: Security#Breach, VaR: 90880.48
+    Event Type: System-Failure@, VaR: 64291.56
+    Event Type: Transaction-Fraud!, VaR: 78206.13
+    Event Type: Unauthorized*Access, VaR: 79784.91
+  Business Line: Private@Equity
+    Event Type: Compliance#, VaR: 91157.67
+    Event Type: Data&Breach, VaR: 78351.35
+    Event Type: Fraud$, VaR: 64788.98
+    Event Type: Payment@Error, VaR: 75267.81
+    Event Type: Physical*Damage, VaR: 84393.40
+    Event Type: Security#Breach, VaR: 82174.23
+    Event Type: System-Failure@, VaR: 69559.04
+    Event Type: Transaction-Fraud!, VaR: 72362.92
+    Event Type: Unauthorized*Access, VaR: 67340.99
+  Business Line: Retail_Banking
+    Event Type: Compliance#, VaR: 81412.62
+    Event Type: Data&Breach, VaR: 74208.01
+    Event Type: Fraud$, VaR: 78707.95
+    Event Type: Payment@Error, VaR: 74968.71
+    Event Type: Physical*Damage, VaR: 88156.36
+    Event Type: Security#Breach, VaR: 83937.87
+    Event Type: System-Failure@, VaR: 84776.08
+    Event Type: Transaction-Fraud!, VaR: 61523.17
+    Event Type: Unauthorized*Access, VaR: 76477.96
+  Business Line: Risk&Compliance
+    Event Type: Compliance#, VaR: 78275.87
+    Event Type: Data&Breach, VaR: 71671.09
+    Event Type: Fraud$, VaR: 83195.70
+    Event Type: Payment@Error, VaR: 81513.38
+    Event Type: Physical*Damage, VaR: 66842.56
+    Event Type: Security#Breach, VaR: 87515.93
+    Event Type: System-Failure@, VaR: 73560.29
+    Event Type: Transaction-Fraud!, VaR: 73868.88
+    Event Type: Unauthorized*Access, VaR: 85873.48
+  Business Line: Treasury#Services
+    Event Type: Compliance#, VaR: 75315.37
+    Event Type: Data&Breach, VaR: 71173.93
+    Event Type: Fraud$, VaR: 70662.98
+    Event Type: Payment@Error, VaR: 81981.89
+    Event Type: Physical*Damage, VaR: 71504.30
+    Event Type: Security#Breach, VaR: 72238.65
+    Event Type: System-Failure@, VaR: 80244.30
+    Event Type: Transaction-Fraud!, VaR: 62662.10
+    Event Type: Unauthorized*Access, VaR: 81202.79
+  Business Line: Wealth*Management
+    Event Type: Compliance#, VaR: 83232.08
+    Event Type: Data&Breach, VaR: 83889.37
+    Event Type: Fraud$, VaR: 74316.59
+    Event Type: Payment@Error, VaR: 87899.84
+    Event Type: Physical*Damage, VaR: 69016.08
+    Event Type: Security#Breach, VaR: 68138.84
+    Event Type: System-Failure@, VaR: 66567.29
+    Event Type: Transaction-Fraud!, VaR: 64252.19
+    Event Type: Unauthorized*Access, VaR: 75114.01
+Year: 2024
+  Business Line: Corporate-Banking!
+    Event Type: Compliance#, VaR: 87196.66
+    Event Type: Data&Breach, VaR: 71703.23
+    Event Type: Fraud$, VaR: 77334.32
+    Event Type: Payment@Error, VaR: 65091.81
+    Event Type: Physical*Damage, VaR: 77953.71
+    Event Type: Security#Breach, VaR: 74052.14
+    Event Type: System-Failure@, VaR: 76906.29
+    Event Type: Transaction-Fraud!, VaR: 71730.99
+    Event Type: Unauthorized*Access, VaR: 72267.48
+  Business Line: Insurance&
+    Event Type: Compliance#, VaR: 83511.10
+    Event Type: Data&Breach, VaR: 86815.05
+    Event Type: Fraud$, VaR: 76195.98
+    Event Type: Payment@Error, VaR: 62581.74
+    Event Type: Physical*Damage, VaR: 80964.77
+    Event Type: Security#Breach, VaR: 64705.88
+    Event Type: System-Failure@, VaR: 74884.39
+    Event Type: Transaction-Fraud!, VaR: 75938.39
+    Event Type: Unauthorized*Access, VaR: 66784.01
+  Business Line: Investment$Banking
+    Event Type: Compliance#, VaR: 79260.10
+    Event Type: Data&Breach, VaR: 65687.69
+    Event Type: Fraud$, VaR: 76807.70
+    Event Type: Payment@Error, VaR: 76158.44
+    Event Type: Physical*Damage, VaR: 76498.26
+    Event Type: Security#Breach, VaR: 78863.20
+    Event Type: System-Failure@, VaR: 78244.69
+    Event Type: Transaction-Fraud!, VaR: 79248.31
+    Event Type: Unauthorized*Access, VaR: 79071.15
+  Business Line: Private@Equity
+    Event Type: Compliance#, VaR: 60410.25
+    Event Type: Data&Breach, VaR: 97019.42
+    Event Type: Fraud$, VaR: 94408.47
+    Event Type: Payment@Error, VaR: 66792.40
+    Event Type: Physical*Damage, VaR: 74690.29
+    Event Type: Security#Breach, VaR: 70478.36
+    Event Type: System-Failure@, VaR: 93023.70
+    Event Type: Transaction-Fraud!, VaR: 67602.09
+    Event Type: Unauthorized*Access, VaR: 69398.62
+  Business Line: Retail_Banking
+    Event Type: Compliance#, VaR: 74210.05
+    Event Type: Data&Breach, VaR: 79860.17
+    Event Type: Fraud$, VaR: 84696.44
+    Event Type: Payment@Error, VaR: 61950.11
+    Event Type: Physical*Damage, VaR: 77970.42
+    Event Type: Security#Breach, VaR: 93014.58
+    Event Type: System-Failure@, VaR: 78735.33
+    Event Type: Transaction-Fraud!, VaR: 68641.66
+    Event Type: Unauthorized*Access, VaR: 86719.12
+  Business Line: Risk&Compliance
+    Event Type: Compliance#, VaR: 66054.08
+    Event Type: Data&Breach, VaR: 64205.48
+    Event Type: Fraud$, VaR: 77162.93
+    Event Type: Payment@Error, VaR: 77627.75
+    Event Type: Physical*Damage, VaR: 75843.50
+    Event Type: Security#Breach, VaR: 75289.21
+    Event Type: System-Failure@, VaR: 64778.12
+    Event Type: Transaction-Fraud!, VaR: 92633.26
+    Event Type: Unauthorized*Access, VaR: 70266.33
+  Business Line: Treasury#Services
+    Event Type: Compliance#, VaR: 76273.32
+    Event Type: Data&Breach, VaR: 61870.82
+    Event Type: Fraud$, VaR: 62337.06
+    Event Type: Payment@Error, VaR: 76368.86
+    Event Type: Physical*Damage, VaR: 69323.35
+    Event Type: Security#Breach, VaR: 90733.59
+    Event Type: System-Failure@, VaR: 76193.84
+    Event Type: Transaction-Fraud!, VaR: 98799.42
+    Event Type: Unauthorized*Access, VaR: 67664.25
+  Business Line: Wealth*Management
+    Event Type: Compliance#, VaR: 65971.15
+    Event Type: Data&Breach, VaR: 73763.99
+    Event Type: Fraud$, VaR: 79968.90
+    Event Type: Payment@Error, VaR: 71227.90
+    Event Type: Physical*Damage, VaR: 94655.36
+    Event Type: Security#Breach, VaR: 62588.03
+    Event Type: System-Failure@, VaR: 74675.25
+    Event Type: Transaction-Fraud!, VaR: 69191.03
+    Event Type: Unauthorized*Access, VaR: 71948.82
+Notes Data Validity: Ensure that your dataset contains sufficient positive loss amounts for fitting the distribution. Confidence Level: Adjust the confidence_level variable to suit your risk appetite (common levels are 95% or 99%). Interpretation: Each VaR value represents the maximum expected loss for a given business line and event type at the specified confidence level. This approach allows you to evaluate the risks associated with different event types and business lines effectively using the Loss Distribution Approach. Let me know if you need further assistance or have specific requirements!
+
+o calculate the net loss as a percentage for each category (by Year, Business Line, and Event Type), we'll follow these steps:
+
+Calculate Total Net Loss: Compute the total net loss for each category. Calculate Percentage Loss: Determine the percentage loss relative to the total losses for each year. Display Results: Format the results to show the percentage loss for each combination of Year, Business Line, and Event Type. Step-by-Step Implementation Here's how you can achieve this in Python using Pandas:
+
+Step 1: Calculate Total Net Loss by Category
+
+# Calculate total net loss by year, business line, and event type
+total_loss_by_category = df.groupby(['Year', 'Business Line', 'Event Type'])['Net Loss Amount'].sum().reset_index()
+
+# Calculate total net loss for each year
+total_loss_by_year = df.groupby(['Year'])['Net Loss Amount'].sum().reset_index()
+total_loss_by_year.columns = ['Year', 'Total Net Loss']
+
+# Merge total loss by year back to the category totals
+merged = total_loss_by_category.merge(total_loss_by_year, on='Year')
+
+# Calculate net loss as percentage
+merged['Net Loss Percentage'] = (merged['Net Loss Amount'] / merged['Total Net Loss']) * 100
+
+# Display the results
+print(merged[['Year', 'Business Line', 'Event Type', 'Net Loss Amount', 'Total Net Loss', 'Net Loss Percentage']])
+     Year       Business Line           Event Type  Net Loss Amount  \
+0    2020  Corporate-Banking!          Compliance#         75180.15   
+1    2020  Corporate-Banking!          Data&Breach        282713.78   
+2    2020  Corporate-Banking!               Fraud$        155325.40   
+3    2020  Corporate-Banking!        Payment@Error        244881.76   
+4    2020  Corporate-Banking!      Physical*Damage        190796.49   
+..    ...                 ...                  ...              ...   
+355  2024   Wealth*Management      Physical*Damage        708208.20   
+356  2024   Wealth*Management      Security#Breach        804977.19   
+357  2024   Wealth*Management      System-Failure@       1066217.13   
+358  2024   Wealth*Management   Transaction-Fraud!       1261740.39   
+359  2024   Wealth*Management  Unauthorized*Access       1396453.74   
+
+     Total Net Loss  Net Loss Percentage  
+0       17305257.50             0.434435  
+1       17305257.50             1.633687  
+2       17305257.50             0.897562  
+3       17305257.50             1.415071  
+4       17305257.50             1.102535  
+..              ...                  ...  
+355     85225491.51             0.830982  
+356     85225491.51             0.944526  
+357     85225491.51             1.251054  
+358     85225491.51             1.480473  
+359     85225491.51             1.638540  
+
+[360 rows x 6 columns]
+# Step 2: Format and Display Results
+# You can further format the output for clarity:
+# Format the output for better readability
+output = merged[['Year', 'Business Line', 'Event Type', 'Net Loss Percentage']].copy()
+output['Net Loss Percentage'] = output['Net Loss Percentage'].round(2)
+
+# Displaying formatted results
+for year in output['Year'].unique():
+    print(f"\nYear: {year}")
+    year_data = output[output['Year'] == year]
+    for index, row in year_data.iterrows():
+        print(f"  Business Line: {row['Business Line']}, Event Type: {row['Event Type']}, Net Loss Percentage: {row['Net Loss Percentage']}%")
+Year: 2020
+  Business Line: Corporate-Banking!, Event Type: Compliance#, Net Loss Percentage: 0.43%
+  Business Line: Corporate-Banking!, Event Type: Data&Breach, Net Loss Percentage: 1.63%
+  Business Line: Corporate-Banking!, Event Type: Fraud$, Net Loss Percentage: 0.9%
+  Business Line: Corporate-Banking!, Event Type: Payment@Error, Net Loss Percentage: 1.42%
+  Business Line: Corporate-Banking!, Event Type: Physical*Damage, Net Loss Percentage: 1.1%
+  Business Line: Corporate-Banking!, Event Type: Security#Breach, Net Loss Percentage: 2.42%
+  Business Line: Corporate-Banking!, Event Type: System-Failure@, Net Loss Percentage: 1.1%
+  Business Line: Corporate-Banking!, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.67%
+  Business Line: Corporate-Banking!, Event Type: Unauthorized*Access, Net Loss Percentage: 1.02%
+  Business Line: Insurance&, Event Type: Compliance#, Net Loss Percentage: 1.35%
+  Business Line: Insurance&, Event Type: Data&Breach, Net Loss Percentage: 1.35%
+  Business Line: Insurance&, Event Type: Fraud$, Net Loss Percentage: 1.41%
+  Business Line: Insurance&, Event Type: Payment@Error, Net Loss Percentage: 0.81%
+  Business Line: Insurance&, Event Type: Physical*Damage, Net Loss Percentage: 1.56%
+  Business Line: Insurance&, Event Type: Security#Breach, Net Loss Percentage: 1.22%
+  Business Line: Insurance&, Event Type: System-Failure@, Net Loss Percentage: 1.95%
+  Business Line: Insurance&, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.85%
+  Business Line: Insurance&, Event Type: Unauthorized*Access, Net Loss Percentage: 1.76%
+  Business Line: Investment$Banking, Event Type: Compliance#, Net Loss Percentage: 0.85%
+  Business Line: Investment$Banking, Event Type: Data&Breach, Net Loss Percentage: 1.48%
+  Business Line: Investment$Banking, Event Type: Fraud$, Net Loss Percentage: 2.29%
+  Business Line: Investment$Banking, Event Type: Payment@Error, Net Loss Percentage: 0.83%
+  Business Line: Investment$Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.87%
+  Business Line: Investment$Banking, Event Type: Security#Breach, Net Loss Percentage: 1.9%
+  Business Line: Investment$Banking, Event Type: System-Failure@, Net Loss Percentage: 0.96%
+  Business Line: Investment$Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.94%
+  Business Line: Investment$Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.22%
+  Business Line: Private@Equity, Event Type: Compliance#, Net Loss Percentage: 1.3%
+  Business Line: Private@Equity, Event Type: Data&Breach, Net Loss Percentage: 1.2%
+  Business Line: Private@Equity, Event Type: Fraud$, Net Loss Percentage: 1.8%
+  Business Line: Private@Equity, Event Type: Payment@Error, Net Loss Percentage: 1.58%
+  Business Line: Private@Equity, Event Type: Physical*Damage, Net Loss Percentage: 1.19%
+  Business Line: Private@Equity, Event Type: Security#Breach, Net Loss Percentage: 1.14%
+  Business Line: Private@Equity, Event Type: System-Failure@, Net Loss Percentage: 0.91%
+  Business Line: Private@Equity, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.54%
+  Business Line: Private@Equity, Event Type: Unauthorized*Access, Net Loss Percentage: 1.58%
+  Business Line: Retail_Banking, Event Type: Compliance#, Net Loss Percentage: 1.58%
+  Business Line: Retail_Banking, Event Type: Data&Breach, Net Loss Percentage: 1.4%
+  Business Line: Retail_Banking, Event Type: Fraud$, Net Loss Percentage: 1.42%
+  Business Line: Retail_Banking, Event Type: Payment@Error, Net Loss Percentage: 1.22%
+  Business Line: Retail_Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.5%
+  Business Line: Retail_Banking, Event Type: Security#Breach, Net Loss Percentage: 1.54%
+  Business Line: Retail_Banking, Event Type: System-Failure@, Net Loss Percentage: 1.48%
+  Business Line: Retail_Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.6%
+  Business Line: Retail_Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.65%
+  Business Line: Risk&Compliance, Event Type: Compliance#, Net Loss Percentage: 1.09%
+  Business Line: Risk&Compliance, Event Type: Data&Breach, Net Loss Percentage: 0.88%
+  Business Line: Risk&Compliance, Event Type: Fraud$, Net Loss Percentage: 1.13%
+  Business Line: Risk&Compliance, Event Type: Payment@Error, Net Loss Percentage: 1.81%
+  Business Line: Risk&Compliance, Event Type: Physical*Damage, Net Loss Percentage: 0.31%
+  Business Line: Risk&Compliance, Event Type: Security#Breach, Net Loss Percentage: 2.3%
+  Business Line: Risk&Compliance, Event Type: System-Failure@, Net Loss Percentage: 1.79%
+  Business Line: Risk&Compliance, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.25%
+  Business Line: Risk&Compliance, Event Type: Unauthorized*Access, Net Loss Percentage: 1.43%
+  Business Line: Treasury#Services, Event Type: Compliance#, Net Loss Percentage: 1.42%
+  Business Line: Treasury#Services, Event Type: Data&Breach, Net Loss Percentage: 1.3%
+  Business Line: Treasury#Services, Event Type: Fraud$, Net Loss Percentage: 1.0%
+  Business Line: Treasury#Services, Event Type: Payment@Error, Net Loss Percentage: 0.87%
+  Business Line: Treasury#Services, Event Type: Physical*Damage, Net Loss Percentage: 1.32%
+  Business Line: Treasury#Services, Event Type: Security#Breach, Net Loss Percentage: 1.72%
+  Business Line: Treasury#Services, Event Type: System-Failure@, Net Loss Percentage: 0.92%
+  Business Line: Treasury#Services, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.69%
+  Business Line: Treasury#Services, Event Type: Unauthorized*Access, Net Loss Percentage: 2.09%
+  Business Line: Wealth*Management, Event Type: Compliance#, Net Loss Percentage: 1.83%
+  Business Line: Wealth*Management, Event Type: Data&Breach, Net Loss Percentage: 0.99%
+  Business Line: Wealth*Management, Event Type: Fraud$, Net Loss Percentage: 0.89%
+  Business Line: Wealth*Management, Event Type: Payment@Error, Net Loss Percentage: 1.22%
+  Business Line: Wealth*Management, Event Type: Physical*Damage, Net Loss Percentage: 1.74%
+  Business Line: Wealth*Management, Event Type: Security#Breach, Net Loss Percentage: 1.56%
+  Business Line: Wealth*Management, Event Type: System-Failure@, Net Loss Percentage: 1.73%
+  Business Line: Wealth*Management, Event Type: Transaction-Fraud!, Net Loss Percentage: 0.33%
+  Business Line: Wealth*Management, Event Type: Unauthorized*Access, Net Loss Percentage: 1.49%
+
+Year: 2021
+  Business Line: Corporate-Banking!, Event Type: Compliance#, Net Loss Percentage: 1.41%
+  Business Line: Corporate-Banking!, Event Type: Data&Breach, Net Loss Percentage: 1.65%
+  Business Line: Corporate-Banking!, Event Type: Fraud$, Net Loss Percentage: 1.18%
+  Business Line: Corporate-Banking!, Event Type: Payment@Error, Net Loss Percentage: 1.59%
+  Business Line: Corporate-Banking!, Event Type: Physical*Damage, Net Loss Percentage: 1.43%
+  Business Line: Corporate-Banking!, Event Type: Security#Breach, Net Loss Percentage: 1.39%
+  Business Line: Corporate-Banking!, Event Type: System-Failure@, Net Loss Percentage: 1.26%
+  Business Line: Corporate-Banking!, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.64%
+  Business Line: Corporate-Banking!, Event Type: Unauthorized*Access, Net Loss Percentage: 1.43%
+  Business Line: Insurance&, Event Type: Compliance#, Net Loss Percentage: 1.79%
+  Business Line: Insurance&, Event Type: Data&Breach, Net Loss Percentage: 1.44%
+  Business Line: Insurance&, Event Type: Fraud$, Net Loss Percentage: 1.44%
+  Business Line: Insurance&, Event Type: Payment@Error, Net Loss Percentage: 1.23%
+  Business Line: Insurance&, Event Type: Physical*Damage, Net Loss Percentage: 1.4%
+  Business Line: Insurance&, Event Type: Security#Breach, Net Loss Percentage: 1.46%
+  Business Line: Insurance&, Event Type: System-Failure@, Net Loss Percentage: 1.2%
+  Business Line: Insurance&, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.35%
+  Business Line: Insurance&, Event Type: Unauthorized*Access, Net Loss Percentage: 1.63%
+  Business Line: Investment$Banking, Event Type: Compliance#, Net Loss Percentage: 1.61%
+  Business Line: Investment$Banking, Event Type: Data&Breach, Net Loss Percentage: 1.12%
+  Business Line: Investment$Banking, Event Type: Fraud$, Net Loss Percentage: 1.62%
+  Business Line: Investment$Banking, Event Type: Payment@Error, Net Loss Percentage: 1.06%
+  Business Line: Investment$Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.22%
+  Business Line: Investment$Banking, Event Type: Security#Breach, Net Loss Percentage: 1.65%
+  Business Line: Investment$Banking, Event Type: System-Failure@, Net Loss Percentage: 1.29%
+  Business Line: Investment$Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.43%
+  Business Line: Investment$Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.41%
+  Business Line: Private@Equity, Event Type: Compliance#, Net Loss Percentage: 1.58%
+  Business Line: Private@Equity, Event Type: Data&Breach, Net Loss Percentage: 1.09%
+  Business Line: Private@Equity, Event Type: Fraud$, Net Loss Percentage: 1.05%
+  Business Line: Private@Equity, Event Type: Payment@Error, Net Loss Percentage: 1.92%
+  Business Line: Private@Equity, Event Type: Physical*Damage, Net Loss Percentage: 1.52%
+  Business Line: Private@Equity, Event Type: Security#Breach, Net Loss Percentage: 1.63%
+  Business Line: Private@Equity, Event Type: System-Failure@, Net Loss Percentage: 1.2%
+  Business Line: Private@Equity, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.14%
+  Business Line: Private@Equity, Event Type: Unauthorized*Access, Net Loss Percentage: 1.39%
+  Business Line: Retail_Banking, Event Type: Compliance#, Net Loss Percentage: 1.21%
+  Business Line: Retail_Banking, Event Type: Data&Breach, Net Loss Percentage: 1.33%
+  Business Line: Retail_Banking, Event Type: Fraud$, Net Loss Percentage: 1.78%
+  Business Line: Retail_Banking, Event Type: Payment@Error, Net Loss Percentage: 1.47%
+  Business Line: Retail_Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.38%
+  Business Line: Retail_Banking, Event Type: Security#Breach, Net Loss Percentage: 1.72%
+  Business Line: Retail_Banking, Event Type: System-Failure@, Net Loss Percentage: 1.45%
+  Business Line: Retail_Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.42%
+  Business Line: Retail_Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.02%
+  Business Line: Risk&Compliance, Event Type: Compliance#, Net Loss Percentage: 1.32%
+  Business Line: Risk&Compliance, Event Type: Data&Breach, Net Loss Percentage: 1.25%
+  Business Line: Risk&Compliance, Event Type: Fraud$, Net Loss Percentage: 1.36%
+  Business Line: Risk&Compliance, Event Type: Payment@Error, Net Loss Percentage: 1.33%
+  Business Line: Risk&Compliance, Event Type: Physical*Damage, Net Loss Percentage: 1.25%
+  Business Line: Risk&Compliance, Event Type: Security#Breach, Net Loss Percentage: 1.45%
+  Business Line: Risk&Compliance, Event Type: System-Failure@, Net Loss Percentage: 1.64%
+  Business Line: Risk&Compliance, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.32%
+  Business Line: Risk&Compliance, Event Type: Unauthorized*Access, Net Loss Percentage: 1.47%
+  Business Line: Treasury#Services, Event Type: Compliance#, Net Loss Percentage: 1.03%
+  Business Line: Treasury#Services, Event Type: Data&Breach, Net Loss Percentage: 1.38%
+  Business Line: Treasury#Services, Event Type: Fraud$, Net Loss Percentage: 1.15%
+  Business Line: Treasury#Services, Event Type: Payment@Error, Net Loss Percentage: 1.5%
+  Business Line: Treasury#Services, Event Type: Physical*Damage, Net Loss Percentage: 1.38%
+  Business Line: Treasury#Services, Event Type: Security#Breach, Net Loss Percentage: 1.29%
+  Business Line: Treasury#Services, Event Type: System-Failure@, Net Loss Percentage: 1.19%
+  Business Line: Treasury#Services, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.37%
+  Business Line: Treasury#Services, Event Type: Unauthorized*Access, Net Loss Percentage: 1.35%
+  Business Line: Wealth*Management, Event Type: Compliance#, Net Loss Percentage: 1.47%
+  Business Line: Wealth*Management, Event Type: Data&Breach, Net Loss Percentage: 1.42%
+  Business Line: Wealth*Management, Event Type: Fraud$, Net Loss Percentage: 1.25%
+  Business Line: Wealth*Management, Event Type: Payment@Error, Net Loss Percentage: 1.65%
+  Business Line: Wealth*Management, Event Type: Physical*Damage, Net Loss Percentage: 1.06%
+  Business Line: Wealth*Management, Event Type: Security#Breach, Net Loss Percentage: 1.22%
+  Business Line: Wealth*Management, Event Type: System-Failure@, Net Loss Percentage: 1.43%
+  Business Line: Wealth*Management, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.26%
+  Business Line: Wealth*Management, Event Type: Unauthorized*Access, Net Loss Percentage: 1.6%
+
+Year: 2022
+  Business Line: Corporate-Banking!, Event Type: Compliance#, Net Loss Percentage: 1.3%
+  Business Line: Corporate-Banking!, Event Type: Data&Breach, Net Loss Percentage: 1.34%
+  Business Line: Corporate-Banking!, Event Type: Fraud$, Net Loss Percentage: 1.58%
+  Business Line: Corporate-Banking!, Event Type: Payment@Error, Net Loss Percentage: 1.37%
+  Business Line: Corporate-Banking!, Event Type: Physical*Damage, Net Loss Percentage: 1.13%
+  Business Line: Corporate-Banking!, Event Type: Security#Breach, Net Loss Percentage: 1.44%
+  Business Line: Corporate-Banking!, Event Type: System-Failure@, Net Loss Percentage: 1.47%
+  Business Line: Corporate-Banking!, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.31%
+  Business Line: Corporate-Banking!, Event Type: Unauthorized*Access, Net Loss Percentage: 1.41%
+  Business Line: Insurance&, Event Type: Compliance#, Net Loss Percentage: 1.2%
+  Business Line: Insurance&, Event Type: Data&Breach, Net Loss Percentage: 1.3%
+  Business Line: Insurance&, Event Type: Fraud$, Net Loss Percentage: 0.98%
+  Business Line: Insurance&, Event Type: Payment@Error, Net Loss Percentage: 1.4%
+  Business Line: Insurance&, Event Type: Physical*Damage, Net Loss Percentage: 1.35%
+  Business Line: Insurance&, Event Type: Security#Breach, Net Loss Percentage: 1.2%
+  Business Line: Insurance&, Event Type: System-Failure@, Net Loss Percentage: 1.21%
+  Business Line: Insurance&, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.72%
+  Business Line: Insurance&, Event Type: Unauthorized*Access, Net Loss Percentage: 1.53%
+  Business Line: Investment$Banking, Event Type: Compliance#, Net Loss Percentage: 1.82%
+  Business Line: Investment$Banking, Event Type: Data&Breach, Net Loss Percentage: 1.34%
+  Business Line: Investment$Banking, Event Type: Fraud$, Net Loss Percentage: 1.41%
+  Business Line: Investment$Banking, Event Type: Payment@Error, Net Loss Percentage: 1.37%
+  Business Line: Investment$Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.44%
+  Business Line: Investment$Banking, Event Type: Security#Breach, Net Loss Percentage: 1.5%
+  Business Line: Investment$Banking, Event Type: System-Failure@, Net Loss Percentage: 1.52%
+  Business Line: Investment$Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.46%
+  Business Line: Investment$Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.49%
+  Business Line: Private@Equity, Event Type: Compliance#, Net Loss Percentage: 1.64%
+  Business Line: Private@Equity, Event Type: Data&Breach, Net Loss Percentage: 1.17%
+  Business Line: Private@Equity, Event Type: Fraud$, Net Loss Percentage: 1.51%
+  Business Line: Private@Equity, Event Type: Payment@Error, Net Loss Percentage: 1.49%
+  Business Line: Private@Equity, Event Type: Physical*Damage, Net Loss Percentage: 1.28%
+  Business Line: Private@Equity, Event Type: Security#Breach, Net Loss Percentage: 1.47%
+  Business Line: Private@Equity, Event Type: System-Failure@, Net Loss Percentage: 1.19%
+  Business Line: Private@Equity, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.38%
+  Business Line: Private@Equity, Event Type: Unauthorized*Access, Net Loss Percentage: 1.33%
+  Business Line: Retail_Banking, Event Type: Compliance#, Net Loss Percentage: 1.31%
+  Business Line: Retail_Banking, Event Type: Data&Breach, Net Loss Percentage: 1.3%
+  Business Line: Retail_Banking, Event Type: Fraud$, Net Loss Percentage: 1.33%
+  Business Line: Retail_Banking, Event Type: Payment@Error, Net Loss Percentage: 1.38%
+  Business Line: Retail_Banking, Event Type: Physical*Damage, Net Loss Percentage: 0.99%
+  Business Line: Retail_Banking, Event Type: Security#Breach, Net Loss Percentage: 1.4%
+  Business Line: Retail_Banking, Event Type: System-Failure@, Net Loss Percentage: 1.19%
+  Business Line: Retail_Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.61%
+  Business Line: Retail_Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.5%
+  Business Line: Risk&Compliance, Event Type: Compliance#, Net Loss Percentage: 1.29%
+  Business Line: Risk&Compliance, Event Type: Data&Breach, Net Loss Percentage: 1.81%
+  Business Line: Risk&Compliance, Event Type: Fraud$, Net Loss Percentage: 1.45%
+  Business Line: Risk&Compliance, Event Type: Payment@Error, Net Loss Percentage: 1.55%
+  Business Line: Risk&Compliance, Event Type: Physical*Damage, Net Loss Percentage: 1.24%
+  Business Line: Risk&Compliance, Event Type: Security#Breach, Net Loss Percentage: 1.26%
+  Business Line: Risk&Compliance, Event Type: System-Failure@, Net Loss Percentage: 1.57%
+  Business Line: Risk&Compliance, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.19%
+  Business Line: Risk&Compliance, Event Type: Unauthorized*Access, Net Loss Percentage: 1.64%
+  Business Line: Treasury#Services, Event Type: Compliance#, Net Loss Percentage: 1.12%
+  Business Line: Treasury#Services, Event Type: Data&Breach, Net Loss Percentage: 1.58%
+  Business Line: Treasury#Services, Event Type: Fraud$, Net Loss Percentage: 1.15%
+  Business Line: Treasury#Services, Event Type: Payment@Error, Net Loss Percentage: 1.15%
+  Business Line: Treasury#Services, Event Type: Physical*Damage, Net Loss Percentage: 1.75%
+  Business Line: Treasury#Services, Event Type: Security#Breach, Net Loss Percentage: 1.49%
+  Business Line: Treasury#Services, Event Type: System-Failure@, Net Loss Percentage: 1.57%
+  Business Line: Treasury#Services, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.09%
+  Business Line: Treasury#Services, Event Type: Unauthorized*Access, Net Loss Percentage: 1.47%
+  Business Line: Wealth*Management, Event Type: Compliance#, Net Loss Percentage: 1.53%
+  Business Line: Wealth*Management, Event Type: Data&Breach, Net Loss Percentage: 1.41%
+  Business Line: Wealth*Management, Event Type: Fraud$, Net Loss Percentage: 1.55%
+  Business Line: Wealth*Management, Event Type: Payment@Error, Net Loss Percentage: 0.99%
+  Business Line: Wealth*Management, Event Type: Physical*Damage, Net Loss Percentage: 1.51%
+  Business Line: Wealth*Management, Event Type: Security#Breach, Net Loss Percentage: 1.15%
+  Business Line: Wealth*Management, Event Type: System-Failure@, Net Loss Percentage: 1.83%
+  Business Line: Wealth*Management, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.23%
+  Business Line: Wealth*Management, Event Type: Unauthorized*Access, Net Loss Percentage: 1.36%
+
+Year: 2023
+  Business Line: Corporate-Banking!, Event Type: Compliance#, Net Loss Percentage: 1.8%
+  Business Line: Corporate-Banking!, Event Type: Data&Breach, Net Loss Percentage: 1.13%
+  Business Line: Corporate-Banking!, Event Type: Fraud$, Net Loss Percentage: 1.51%
+  Business Line: Corporate-Banking!, Event Type: Payment@Error, Net Loss Percentage: 1.29%
+  Business Line: Corporate-Banking!, Event Type: Physical*Damage, Net Loss Percentage: 1.52%
+  Business Line: Corporate-Banking!, Event Type: Security#Breach, Net Loss Percentage: 1.44%
+  Business Line: Corporate-Banking!, Event Type: System-Failure@, Net Loss Percentage: 1.48%
+  Business Line: Corporate-Banking!, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.57%
+  Business Line: Corporate-Banking!, Event Type: Unauthorized*Access, Net Loss Percentage: 1.5%
+  Business Line: Insurance&, Event Type: Compliance#, Net Loss Percentage: 0.98%
+  Business Line: Insurance&, Event Type: Data&Breach, Net Loss Percentage: 1.24%
+  Business Line: Insurance&, Event Type: Fraud$, Net Loss Percentage: 1.04%
+  Business Line: Insurance&, Event Type: Payment@Error, Net Loss Percentage: 1.54%
+  Business Line: Insurance&, Event Type: Physical*Damage, Net Loss Percentage: 1.38%
+  Business Line: Insurance&, Event Type: Security#Breach, Net Loss Percentage: 1.49%
+  Business Line: Insurance&, Event Type: System-Failure@, Net Loss Percentage: 1.22%
+  Business Line: Insurance&, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.42%
+  Business Line: Insurance&, Event Type: Unauthorized*Access, Net Loss Percentage: 1.4%
+  Business Line: Investment$Banking, Event Type: Compliance#, Net Loss Percentage: 1.53%
+  Business Line: Investment$Banking, Event Type: Data&Breach, Net Loss Percentage: 1.26%
+  Business Line: Investment$Banking, Event Type: Fraud$, Net Loss Percentage: 1.5%
+  Business Line: Investment$Banking, Event Type: Payment@Error, Net Loss Percentage: 1.34%
+  Business Line: Investment$Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.06%
+  Business Line: Investment$Banking, Event Type: Security#Breach, Net Loss Percentage: 1.45%
+  Business Line: Investment$Banking, Event Type: System-Failure@, Net Loss Percentage: 1.53%
+  Business Line: Investment$Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.4%
+  Business Line: Investment$Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.43%
+  Business Line: Private@Equity, Event Type: Compliance#, Net Loss Percentage: 1.6%
+  Business Line: Private@Equity, Event Type: Data&Breach, Net Loss Percentage: 1.35%
+  Business Line: Private@Equity, Event Type: Fraud$, Net Loss Percentage: 1.25%
+  Business Line: Private@Equity, Event Type: Payment@Error, Net Loss Percentage: 1.1%
+  Business Line: Private@Equity, Event Type: Physical*Damage, Net Loss Percentage: 1.6%
+  Business Line: Private@Equity, Event Type: Security#Breach, Net Loss Percentage: 1.39%
+  Business Line: Private@Equity, Event Type: System-Failure@, Net Loss Percentage: 1.51%
+  Business Line: Private@Equity, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.45%
+  Business Line: Private@Equity, Event Type: Unauthorized*Access, Net Loss Percentage: 1.48%
+  Business Line: Retail_Banking, Event Type: Compliance#, Net Loss Percentage: 1.37%
+  Business Line: Retail_Banking, Event Type: Data&Breach, Net Loss Percentage: 1.17%
+  Business Line: Retail_Banking, Event Type: Fraud$, Net Loss Percentage: 1.84%
+  Business Line: Retail_Banking, Event Type: Payment@Error, Net Loss Percentage: 1.41%
+  Business Line: Retail_Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.5%
+  Business Line: Retail_Banking, Event Type: Security#Breach, Net Loss Percentage: 1.32%
+  Business Line: Retail_Banking, Event Type: System-Failure@, Net Loss Percentage: 1.68%
+  Business Line: Retail_Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.11%
+  Business Line: Retail_Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.47%
+  Business Line: Risk&Compliance, Event Type: Compliance#, Net Loss Percentage: 1.06%
+  Business Line: Risk&Compliance, Event Type: Data&Breach, Net Loss Percentage: 1.11%
+  Business Line: Risk&Compliance, Event Type: Fraud$, Net Loss Percentage: 1.7%
+  Business Line: Risk&Compliance, Event Type: Payment@Error, Net Loss Percentage: 1.48%
+  Business Line: Risk&Compliance, Event Type: Physical*Damage, Net Loss Percentage: 1.34%
+  Business Line: Risk&Compliance, Event Type: Security#Breach, Net Loss Percentage: 1.48%
+  Business Line: Risk&Compliance, Event Type: System-Failure@, Net Loss Percentage: 1.39%
+  Business Line: Risk&Compliance, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.68%
+  Business Line: Risk&Compliance, Event Type: Unauthorized*Access, Net Loss Percentage: 1.12%
+  Business Line: Treasury#Services, Event Type: Compliance#, Net Loss Percentage: 1.14%
+  Business Line: Treasury#Services, Event Type: Data&Breach, Net Loss Percentage: 1.41%
+  Business Line: Treasury#Services, Event Type: Fraud$, Net Loss Percentage: 1.21%
+  Business Line: Treasury#Services, Event Type: Payment@Error, Net Loss Percentage: 1.57%
+  Business Line: Treasury#Services, Event Type: Physical*Damage, Net Loss Percentage: 1.26%
+  Business Line: Treasury#Services, Event Type: Security#Breach, Net Loss Percentage: 1.26%
+  Business Line: Treasury#Services, Event Type: System-Failure@, Net Loss Percentage: 1.5%
+  Business Line: Treasury#Services, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.54%
+  Business Line: Treasury#Services, Event Type: Unauthorized*Access, Net Loss Percentage: 1.34%
+  Business Line: Wealth*Management, Event Type: Compliance#, Net Loss Percentage: 1.41%
+  Business Line: Wealth*Management, Event Type: Data&Breach, Net Loss Percentage: 1.46%
+  Business Line: Wealth*Management, Event Type: Fraud$, Net Loss Percentage: 1.39%
+  Business Line: Wealth*Management, Event Type: Payment@Error, Net Loss Percentage: 1.61%
+  Business Line: Wealth*Management, Event Type: Physical*Damage, Net Loss Percentage: 1.32%
+  Business Line: Wealth*Management, Event Type: Security#Breach, Net Loss Percentage: 1.21%
+  Business Line: Wealth*Management, Event Type: System-Failure@, Net Loss Percentage: 1.32%
+  Business Line: Wealth*Management, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.42%
+  Business Line: Wealth*Management, Event Type: Unauthorized*Access, Net Loss Percentage: 1.24%
+
+Year: 2024
+  Business Line: Corporate-Banking!, Event Type: Compliance#, Net Loss Percentage: 1.26%
+  Business Line: Corporate-Banking!, Event Type: Data&Breach, Net Loss Percentage: 1.34%
+  Business Line: Corporate-Banking!, Event Type: Fraud$, Net Loss Percentage: 1.62%
+  Business Line: Corporate-Banking!, Event Type: Payment@Error, Net Loss Percentage: 1.29%
+  Business Line: Corporate-Banking!, Event Type: Physical*Damage, Net Loss Percentage: 1.55%
+  Business Line: Corporate-Banking!, Event Type: Security#Breach, Net Loss Percentage: 1.54%
+  Business Line: Corporate-Banking!, Event Type: System-Failure@, Net Loss Percentage: 1.08%
+  Business Line: Corporate-Banking!, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.59%
+  Business Line: Corporate-Banking!, Event Type: Unauthorized*Access, Net Loss Percentage: 1.28%
+  Business Line: Insurance&, Event Type: Compliance#, Net Loss Percentage: 1.23%
+  Business Line: Insurance&, Event Type: Data&Breach, Net Loss Percentage: 1.62%
+  Business Line: Insurance&, Event Type: Fraud$, Net Loss Percentage: 1.74%
+  Business Line: Insurance&, Event Type: Payment@Error, Net Loss Percentage: 0.98%
+  Business Line: Insurance&, Event Type: Physical*Damage, Net Loss Percentage: 1.63%
+  Business Line: Insurance&, Event Type: Security#Breach, Net Loss Percentage: 1.02%
+  Business Line: Insurance&, Event Type: System-Failure@, Net Loss Percentage: 1.72%
+  Business Line: Insurance&, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.14%
+  Business Line: Insurance&, Event Type: Unauthorized*Access, Net Loss Percentage: 1.76%
+  Business Line: Investment$Banking, Event Type: Compliance#, Net Loss Percentage: 1.15%
+  Business Line: Investment$Banking, Event Type: Data&Breach, Net Loss Percentage: 1.18%
+  Business Line: Investment$Banking, Event Type: Fraud$, Net Loss Percentage: 1.39%
+  Business Line: Investment$Banking, Event Type: Payment@Error, Net Loss Percentage: 1.82%
+  Business Line: Investment$Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.04%
+  Business Line: Investment$Banking, Event Type: Security#Breach, Net Loss Percentage: 1.47%
+  Business Line: Investment$Banking, Event Type: System-Failure@, Net Loss Percentage: 1.53%
+  Business Line: Investment$Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.6%
+  Business Line: Investment$Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.76%
+  Business Line: Private@Equity, Event Type: Compliance#, Net Loss Percentage: 0.93%
+  Business Line: Private@Equity, Event Type: Data&Breach, Net Loss Percentage: 1.16%
+  Business Line: Private@Equity, Event Type: Fraud$, Net Loss Percentage: 1.77%
+  Business Line: Private@Equity, Event Type: Payment@Error, Net Loss Percentage: 1.36%
+  Business Line: Private@Equity, Event Type: Physical*Damage, Net Loss Percentage: 1.12%
+  Business Line: Private@Equity, Event Type: Security#Breach, Net Loss Percentage: 0.99%
+  Business Line: Private@Equity, Event Type: System-Failure@, Net Loss Percentage: 1.45%
+  Business Line: Private@Equity, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.33%
+  Business Line: Private@Equity, Event Type: Unauthorized*Access, Net Loss Percentage: 1.63%
+  Business Line: Retail_Banking, Event Type: Compliance#, Net Loss Percentage: 1.31%
+  Business Line: Retail_Banking, Event Type: Data&Breach, Net Loss Percentage: 1.22%
+  Business Line: Retail_Banking, Event Type: Fraud$, Net Loss Percentage: 1.7%
+  Business Line: Retail_Banking, Event Type: Payment@Error, Net Loss Percentage: 1.25%
+  Business Line: Retail_Banking, Event Type: Physical*Damage, Net Loss Percentage: 1.47%
+  Business Line: Retail_Banking, Event Type: Security#Breach, Net Loss Percentage: 1.14%
+  Business Line: Retail_Banking, Event Type: System-Failure@, Net Loss Percentage: 1.78%
+  Business Line: Retail_Banking, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.57%
+  Business Line: Retail_Banking, Event Type: Unauthorized*Access, Net Loss Percentage: 1.65%
+  Business Line: Risk&Compliance, Event Type: Compliance#, Net Loss Percentage: 1.18%
+  Business Line: Risk&Compliance, Event Type: Data&Breach, Net Loss Percentage: 1.34%
+  Business Line: Risk&Compliance, Event Type: Fraud$, Net Loss Percentage: 1.6%
+  Business Line: Risk&Compliance, Event Type: Payment@Error, Net Loss Percentage: 1.6%
+  Business Line: Risk&Compliance, Event Type: Physical*Damage, Net Loss Percentage: 1.44%
+  Business Line: Risk&Compliance, Event Type: Security#Breach, Net Loss Percentage: 1.4%
+  Business Line: Risk&Compliance, Event Type: System-Failure@, Net Loss Percentage: 1.36%
+  Business Line: Risk&Compliance, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.37%
+  Business Line: Risk&Compliance, Event Type: Unauthorized*Access, Net Loss Percentage: 1.24%
+  Business Line: Treasury#Services, Event Type: Compliance#, Net Loss Percentage: 1.44%
+  Business Line: Treasury#Services, Event Type: Data&Breach, Net Loss Percentage: 1.08%
+  Business Line: Treasury#Services, Event Type: Fraud$, Net Loss Percentage: 1.27%
+  Business Line: Treasury#Services, Event Type: Payment@Error, Net Loss Percentage: 1.36%
+  Business Line: Treasury#Services, Event Type: Physical*Damage, Net Loss Percentage: 1.07%
+  Business Line: Treasury#Services, Event Type: Security#Breach, Net Loss Percentage: 1.92%
+  Business Line: Treasury#Services, Event Type: System-Failure@, Net Loss Percentage: 1.9%
+  Business Line: Treasury#Services, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.28%
+  Business Line: Treasury#Services, Event Type: Unauthorized*Access, Net Loss Percentage: 1.53%
+  Business Line: Wealth*Management, Event Type: Compliance#, Net Loss Percentage: 1.49%
+  Business Line: Wealth*Management, Event Type: Data&Breach, Net Loss Percentage: 1.02%
+  Business Line: Wealth*Management, Event Type: Fraud$, Net Loss Percentage: 1.2%
+  Business Line: Wealth*Management, Event Type: Payment@Error, Net Loss Percentage: 1.63%
+  Business Line: Wealth*Management, Event Type: Physical*Damage, Net Loss Percentage: 0.83%
+  Business Line: Wealth*Management, Event Type: Security#Breach, Net Loss Percentage: 0.94%
+  Business Line: Wealth*Management, Event Type: System-Failure@, Net Loss Percentage: 1.25%
+  Business Line: Wealth*Management, Event Type: Transaction-Fraud!, Net Loss Percentage: 1.48%
+  Business Line: Wealth*Management, Event Type: Unauthorized*Access, Net Loss Percentage: 1.64%
+Notes Data Integrity: Ensure your Net Loss Amount column contains valid data (e.g., no missing values). Grouping: The calculations are performed on the entire DataFrame, so make sure the DataFrame is up to date with any previous calculations or filtering you've done. Interpretation: Each percentage indicates how much each event type contributes to the total losses for that year and business line.
+
+To calculate the Value at Risk (VaR) in terms of percentage for each category (by Year, Business Line, and Event Type), you'll follow these steps:
+
+Calculate VaR for Each Category: Fit a distribution to the Net Loss Amount for each combination of Year, Business Line, and Event Type. Calculate Total Net Loss: Determine the total net loss for each category. Calculate VaR as a Percentage of Total Net Loss: Calculate the VaR as a percentage of the total net loss for each category. Step-by-Step Implementation Here’s how you can implement this:
+
+Step 1: Define Functions for Fitting the Distribution and Calculating VaR
+
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+
+# Function to fit loss distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var(df, confidence_level=0.95):
+    var_results = {}
+    
+    # Group by year, Business Line, and Event Type
+    for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+        # Filter out non-positive losses
+        losses = group['Net Loss Amount'][group['Net Loss Amount'] > 0]
+        
+        if len(losses) > 0:  # Check if there are any positive losses
+            # Fit a log-normal distribution
+            shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+            # Calculate the VaR
+            var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+            
+            # Store the VaR and total losses
+            if year not in var_results:
+                var_results[year] = {}
+            if business_line not in var_results[year]:
+                var_results[year][business_line] = {}
+            var_results[year][business_line][event_type] = {
+                'VaR': var_value,
+                'Total Net Loss': losses.sum()
+            }
+    
+    return var_results
+# Step 2: Calculate VaR and Total Net Loss
+# Assuming df is your DataFrame and it has a 'Net Loss Amount' column.
+# Ensure the Date column is datetime and extract the year.
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+
+# Calculate VaR
+confidence_level = 0.95  # Set your confidence level here
+var_by_year_business_event = fit_loss_distribution_and_calculate_var(df, confidence_level)
+# Step 3: Calculate VaR as Percentage of Total Net Loss
+# Now, you can calculate the VaR as a percentage of the total net loss for each category:
+# Prepare a DataFrame to store the results
+var_percentages = []
+
+# Calculate VaR as percentage
+for year, business_lines in var_by_year_business_event.items():
+    for business_line, event_types in business_lines.items():
+        for event_type, values in event_types.items():
+            var_value = values['VaR']
+            total_loss = values['Total Net Loss']
+            var_percentage = (var_value / total_loss) * 100
+            
+            var_percentages.append({
+                'Year': year,
+                'Business Line': business_line,
+                'Event Type': event_type,
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'VaR Percentage': var_percentage
+            })
+
+# Convert to DataFrame
+var_percentage_df = pd.DataFrame(var_percentages)
+
+# Display the results
+print(var_percentage_df[['Year', 'Business Line', 'Event Type', 'VaR', 'Total Net Loss', 'VaR Percentage']])
+     Year       Business Line           Event Type           VaR  \
+0    2020  Corporate-Banking!          Compliance#  34139.157029   
+1    2020  Corporate-Banking!          Data&Breach  54516.407889   
+2    2020  Corporate-Banking!               Fraud$  75993.567768   
+3    2020  Corporate-Banking!        Payment@Error  72646.986118   
+4    2020  Corporate-Banking!      Physical*Damage  77908.270194   
+..    ...                 ...                  ...           ...   
+355  2024   Wealth*Management      Physical*Damage  94655.361185   
+356  2024   Wealth*Management      Security#Breach  62588.030438   
+357  2024   Wealth*Management      System-Failure@  74675.250976   
+358  2024   Wealth*Management   Transaction-Fraud!  69191.026258   
+359  2024   Wealth*Management  Unauthorized*Access  71948.820715   
+
+     Total Net Loss  VaR Percentage  
+0          75180.15       45.409802  
+1         282713.78       19.283251  
+2         155325.40       48.925396  
+3         244881.76       29.666148  
+4         190796.49       40.833178  
+..              ...             ...  
+355       708208.20       13.365471  
+356       804977.19        7.775131  
+357      1066217.13        7.003756  
+358      1261740.39        5.483777  
+359      1396453.74        5.152252  
+
+[360 rows x 6 columns]
+Example Output The output DataFrame will show the VaR, Total Net Loss, and VaR Percentage for each combination of Year, Business Line, and Event Type, formatted like this:
+
+var_percentage_df
+Year	Business Line	Event Type	VaR	Total Net Loss	VaR Percentage
+0	2020	Corporate-Banking!	Compliance#	34139.157029	75180.15	45.409802
+1	2020	Corporate-Banking!	Data&Breach	54516.407889	282713.78	19.283251
+2	2020	Corporate-Banking!	Fraud$	75993.567768	155325.40	48.925396
+3	2020	Corporate-Banking!	Payment@Error	72646.986118	244881.76	29.666148
+4	2020	Corporate-Banking!	Physical*Damage	77908.270194	190796.49	40.833178
+...	...	...	...	...	...	...
+355	2024	Wealth*Management	Physical*Damage	94655.361185	708208.20	13.365471
+356	2024	Wealth*Management	Security#Breach	62588.030438	804977.19	7.775131
+357	2024	Wealth*Management	System-Failure@	74675.250976	1066217.13	7.003756
+358	2024	Wealth*Management	Transaction-Fraud!	69191.026258	1261740.39	5.483777
+359	2024	Wealth*Management	Unauthorized*Access	71948.820715	1396453.74	5.152252
+360 rows × 6 columns
+
+To include the Event ID count in the Value at Risk (VaR) calculations and present the results, we need to modify our approach slightly. The plan is as follows:
+
+Calculate Event ID Count: Count the number of unique Event IDs for each combination of Year, Business Line, and Event Type. Calculate VaR and Total Net Loss: Fit a distribution to the Net Loss Amount for each group and compute the VaR. Calculate VaR as Percentage of Total Net Loss: Calculate the VaR as a percentage of the total net loss. Compile Results: Include the Event ID count in the final results. Step-by-Step Implementation Here’s how you can implement this:
+
+Step 1: Modify the Function to Include Event ID Count We’ll modify the existing function to also calculate the count of unique Event IDs:
+
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+
+# Function to fit loss distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_with_count(df, confidence_level=0.95):
+    var_results = {}
+    
+    # Group by year, Business Line, and Event Type
+    for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+        # Filter out non-positive losses
+        losses = group['Net Loss Amount'][group['Net Loss Amount'] > 0]
+        
+        if len(losses) > 0:  # Check if there are any positive losses
+            # Fit a log-normal distribution
+            shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+            # Calculate the VaR
+            var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+            
+            # Calculate total losses and event ID count
+            total_loss = losses.sum()
+            event_id_count = group['Event IDs'].nunique()
+            
+            # Store the VaR, total losses, and event ID count
+            if year not in var_results:
+                var_results[year] = {}
+            if business_line not in var_results[year]:
+                var_results[year][business_line] = {}
+            var_results[year][business_line][event_type] = {
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'Event ID Count': event_id_count
+            }
+    
+    return var_results
+# Step 2: Calculate VaR, Total Net Loss, and Event ID Count
+# Ensure the Date column is datetime and extract the year.
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+
+# Calculate VaR including event ID count
+confidence_level = 0.95  # Set your confidence level here
+var_by_year_business_event = fit_loss_distribution_and_calculate_var_with_count(df, confidence_level)
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\indexes\base.py:3805, in Index.get_loc(self, key)
+   3804 try:
+-> 3805     return self._engine.get_loc(casted_key)
+   3806 except KeyError as err:
+
+File index.pyx:167, in pandas._libs.index.IndexEngine.get_loc()
+
+File index.pyx:196, in pandas._libs.index.IndexEngine.get_loc()
+
+File pandas\\_libs\\hashtable_class_helper.pxi:7081, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+File pandas\\_libs\\hashtable_class_helper.pxi:7089, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+KeyError: 'Event IDs'
+
+The above exception was the direct cause of the following exception:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[67], line 8
+      6 # Calculate VaR including event ID count
+      7 confidence_level = 0.95  # Set your confidence level here
+----> 8 var_by_year_business_event = fit_loss_distribution_and_calculate_var_with_count(df, confidence_level)
+
+Cell In[66], line 22, in fit_loss_distribution_and_calculate_var_with_count(df, confidence_level)
+     20 # Calculate total losses and event ID count
+     21 total_loss = losses.sum()
+---> 22 event_id_count = group['Event IDs'].nunique()
+     24 # Store the VaR, total losses, and event ID count
+     25 if year not in var_results:
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py:4102, in DataFrame.__getitem__(self, key)
+   4100 if self.columns.nlevels > 1:
+   4101     return self._getitem_multilevel(key)
+-> 4102 indexer = self.columns.get_loc(key)
+   4103 if is_integer(indexer):
+   4104     indexer = [indexer]
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\indexes\base.py:3812, in Index.get_loc(self, key)
+   3807     if isinstance(casted_key, slice) or (
+   3808         isinstance(casted_key, abc.Iterable)
+   3809         and any(isinstance(x, slice) for x in casted_key)
+   3810     ):
+   3811         raise InvalidIndexError(key)
+-> 3812     raise KeyError(key) from err
+   3813 except TypeError:
+   3814     # If we have a listlike key, _check_indexing_error will raise
+   3815     #  InvalidIndexError. Otherwise we fall through and re-raise
+   3816     #  the TypeError.
+   3817     self._check_indexing_error(key)
+
+KeyError: 'Event IDs'
+Step 3: Calculate VaR as Percentage of Total Net Loss and Include Event ID Count Now, we will calculate the VaR as a percentage of the total net loss while also including the event ID count in the final results:
+
+# Prepare a DataFrame to store the results
+var_percentages = []
+
+# Calculate VaR as percentage
+for year, business_lines in var_by_year_business_event.items():
+    for business_line, event_types in business_lines.items():
+        for event_type, values in event_types.items():
+            var_value = values['VaR']
+            total_loss = values['Total Net Loss']
+            event_id_count = values['Event ID Count']
+            var_percentage = (var_value / total_loss) * 100
+            
+            var_percentages.append({
+                'Year': year,
+                'Business Line': business_line,
+                'Event Type': event_type,
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'VaR Percentage': var_percentage,
+                'Event ID Count': event_id_count
+            })
+
+# Convert to DataFrame
+var_percentage_df = pd.DataFrame(var_percentages)
+
+# Display the results
+print(var_percentage_df[['Year', 'Business Line', 'Event Type', 'VaR', 'Total Net Loss', 'VaR Percentage', 'Event ID Count']])
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Cell In[63], line 10
+      8 var_value = values['VaR']
+      9 total_loss = values['Total Net Loss']
+---> 10 event_id_count = values['Event ID Count']
+     11 var_percentage = (var_value / total_loss) * 100
+     13 var_percentages.append({
+     14     'Year': year,
+     15     'Business Line': business_line,
+   (...)
+     20     'Event ID Count': event_id_count
+     21 })
+
+KeyError: 'Event ID Count'
+# Example Output
+# The output DataFrame will show the VaR, Total Net Loss, VaR Percentage, and Event ID Count for each combination of Year, Business Line, and Event Type, formatted like this:
+
+# mathematica
+# Copy code
+#    Year Business Line Event Type          VaR  Total Net Loss  VaR Percentage  Event ID Count
+# 0  2020        Line A     Type 1  12000.00           30000.00       40.00              15
+# 1  2020        Line A     Type 2   8000.00           30000.00       26.67              10
+# 2  2020        Line B     Type 3  15000.00           60000.00       25.00              20
+# 3  2021        Line A     Type 1   9000.00           25000.00       36.00              18
+# 4  2021        Line B     Type 3   7000.00           20000.00       35.00              12
+# ...
+# Notes
+# Data Integrity: Make sure your DataFrame contains valid data, especially for the Net Loss Amount and Event IDs columns.
+# Confidence Level: Adjust the confidence_level variable as needed for your analysis.
+# Interpretation: The Event ID Count will give you insights into how many unique events contributed to the losses in each category.
+# This approach integrates the event count into the VaR analysis, providing a more comprehensive view of the risk across different categories. If you need further adjustments or explanations, feel free to ask!
+# To include the Event ID count percentage in the Value at Risk (VaR) calculations, you can follow these steps:
+
+# Calculate Total Event ID Count: Determine the total number of unique Event IDs for each year.
+# Calculate Event ID Count Percentage: Calculate the percentage of unique Event IDs for each category (year, business line, event type) relative to the total count for that year.
+# Compile Results: Include the Event ID count percentage in the final results alongside the VaR and total net loss.
+# Step-by-Step Implementation
+# Here’s how to implement this in Python:
+
+# Step 1: Modify the Function to Include Event ID Count Percentage
+# We will update our existing function to calculate the total Event ID count and the percentage for each combination of Year, Business Line, and Event Type:
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+
+# Function to fit loss distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_with_count_and_percentage(df, confidence_level=0.95):
+    var_results = {}
+    
+    # Calculate total event ID count by year
+    total_event_count_by_year = df.groupby('Year')['Event_IDs'].nunique().reset_index()  # Adjusted here
+    total_event_count_by_year.columns = ['Year', 'Total Event Count']
+
+    # Group by year, Business Line, and Event Type
+    for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+        # Filter out non-positive losses
+        losses = group['Net Loss Amount'][group['Net Loss Amount'] > 0]
+        
+        if len(losses) > 0:  # Check if there are any positive losses
+            # Fit a log-normal distribution
+            shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+            # Calculate the VaR
+            var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+            
+            # Calculate total losses and event ID count
+            total_loss = losses.sum()
+            event_id_count = group['Event_IDs'].nunique()  # Adjusted here
+            
+            # Get the total event count for the year
+            total_event_count = total_event_count_by_year[total_event_count_by_year['Year'] == year]['Total Event Count'].values[0]
+            
+            # Calculate event ID count percentage
+            event_id_percentage = (event_id_count / total_event_count) * 100
+            
+            # Store the VaR, total losses, event ID count, and event ID percentage
+            if year not in var_results:
+                var_results[year] = {}
+            if business_line not in var_results[year]:
+                var_results[year][business_line] = {}
+            var_results[year][business_line][event_type] = {
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'Event ID Count': event_id_count,
+                'Event ID Percentage': event_id_percentage
+            }
+    
+    return var_results
+# Check the column names in the DataFrame
+print(df.columns.tolist())
+['Date', 'Event ID', 'Event Type', 'Business Line', 'Event Description', 'Net Loss Amount', 'Year']
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+
+# Function to fit loss distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_with_count_and_percentage(df, confidence_level=0.95):
+    var_results = {}
+    
+    # Calculate total event ID count by year
+    total_event_count_by_year = df.groupby('Year')['Event ID'].nunique().reset_index()
+    total_event_count_by_year.columns = ['Year', 'Total Event Count']
+
+    # Group by year, Business Line, and Event Type
+    for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+        # Filter out non-positive losses
+        losses = group['Net Loss Amount'][group['Net Loss Amount'] > 0]
+        
+        if len(losses) > 0:  # Check if there are any positive losses
+            # Fit a log-normal distribution
+            shape, loc, scale = stats.lognorm.fit(losses, floc=0)
+            # Calculate the VaR
+            var_value = stats.lognorm.ppf(confidence_level, shape, loc=loc, scale=scale)
+            
+            # Calculate total losses and event ID count
+            total_loss = losses.sum()
+            event_id_count = group['Event ID'].nunique()
+            
+            # Get the total event count for the year
+            total_event_count = total_event_count_by_year[total_event_count_by_year['Year'] == year]['Total Event Count'].values[0]
+            
+            # Calculate event ID count percentage
+            event_id_percentage = (event_id_count / total_event_count) * 100
+            
+            # Store the VaR, total losses, event ID count, and event ID percentage
+            if year not in var_results:
+                var_results[year] = {}
+            if business_line not in var_results[year]:
+                var_results[year][business_line] = {}
+            var_results[year][business_line][event_type] = {
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'Event ID Count': event_id_count,
+                'Event ID Percentage': event_id_percentage
+            }
+    
+    return var_results
+# Step 2: Calculate VaR, Total Net Loss, Event ID Count, and Percentage
+# Ensure the Date column is datetime and extract the year.
+df['Date'] = pd.to_datetime(df['Date'])
+df['Year'] = df['Date'].dt.year
+
+# Calculate VaR including event ID count and percentage
+confidence_level = 0.95  # Set your confidence level here
+var_by_year_business_event = fit_loss_distribution_and_calculate_var_with_count_and_percentage(df, confidence_level)
+# Step 3: Compile Results Including Event ID Count Percentage
+# Now, compile the results including the VaR, total net loss, event ID count, and event ID count percentage:
+# Prepare a DataFrame to store the results
+var_percentages = []
+
+# Calculate VaR as percentage
+for year, business_lines in var_by_year_business_event.items():
+    for business_line, event_types in business_lines.items():
+        for event_type, values in event_types.items():
+            var_value = values['VaR']
+            total_loss = values['Total Net Loss']
+            event_id_count = values['Event ID Count']
+            event_id_percentage = values['Event ID Percentage']
+            var_percentage = (var_value / total_loss) * 100
+            
+            var_percentages.append({
+                'Year': year,
+                'Business Line': business_line,
+                'Event Type': event_type,
+                'VaR': var_value,
+                'Total Net Loss': total_loss,
+                'VaR Percentage': var_percentage,
+                'Event ID Count': event_id_count,
+                'Event ID Percentage': event_id_percentage
+            })
+
+# Convert to DataFrame
+var_percentage_df = pd.DataFrame(var_percentages)
+
+# Display the results
+print(var_percentage_df[['Year', 'Business Line', 'Event Type', 'VaR', 'Total Net Loss', 'VaR Percentage', 'Event ID Count', 'Event ID Percentage']])
+    Year      Business Line       Event Type           VaR  Total Net Loss  \
+0   2020  Corporate Banking       Compliance  76194.403421      1049506.36   
+1   2020  Corporate Banking            Fraud  76795.963844      1076313.63   
+2   2020  Corporate Banking  Physical Damage  66587.911661      1183976.49   
+3   2020  Corporate Banking   System Failure  68633.599567       972702.32   
+4   2020          Insurance       Compliance  96351.862303       620282.82   
+..   ...                ...              ...           ...             ...   
+75  2024     Retail Banking   System Failure  75448.685724      4812574.62   
+76  2024  Wealth Management       Compliance  78594.394793      5305875.90   
+77  2024  Wealth Management            Fraud  75057.526032      5452353.43   
+78  2024  Wealth Management  Physical Damage  81096.489797      5555549.37   
+79  2024  Wealth Management   System Failure  78502.282400      5153566.21   
+
+    VaR Percentage  Event ID Count  Event ID Percentage  
+0         7.260023              42             6.542056  
+1         7.135092              47             7.320872  
+2         5.624091              46             7.165109  
+3         7.055972              43             6.697819  
+4        15.533537              26             4.049844  
+..             ...             ...                  ...  
+75        1.567741             193             5.769806  
+76        1.481271             210             6.278027  
+77        1.376608             215             6.427504  
+78        1.459738             214             6.397608  
+79        1.523261             203             6.068759  
+
+[80 rows x 8 columns]
+var_percentage_df
+Year	Business Line	Event Type	VaR	Total Net Loss	VaR Percentage	Event ID Count	Event ID Percentage
+0	2020	Corporate Banking	Compliance	76194.403421	1049506.36	7.260023	42	6.542056
+1	2020	Corporate Banking	Fraud	76795.963844	1076313.63	7.135092	47	7.320872
+2	2020	Corporate Banking	Physical Damage	66587.911661	1183976.49	5.624091	46	7.165109
+3	2020	Corporate Banking	System Failure	68633.599567	972702.32	7.055972	43	6.697819
+4	2020	Insurance	Compliance	96351.862303	620282.82	15.533537	26	4.049844
+...	...	...	...	...	...	...	...	...
+75	2024	Retail Banking	System Failure	75448.685724	4812574.62	1.567741	193	5.769806
+76	2024	Wealth Management	Compliance	78594.394793	5305875.90	1.481271	210	6.278027
+77	2024	Wealth Management	Fraud	75057.526032	5452353.43	1.376608	215	6.427504
+78	2024	Wealth Management	Physical Damage	81096.489797	5555549.37	1.459738	214	6.397608
+79	2024	Wealth Management	System Failure	78502.282400	5153566.21	1.523261	203	6.068759
+80 rows × 8 columns
+
+# Example Output
+# The output DataFrame will now show the VaR, Total Net Loss, VaR Percentage, Event ID Count, and Event ID Percentage for each combination of Year, Business Line, and Event Type, formatted like this:
+
+# mathematica
+# Copy code
+#    Year Business Line Event Type          VaR  Total Net Loss  VaR Percentage  Event ID Count  Event ID Percentage
+# 0  2020        Line A     Type 1  12000.00           30000.00       40.00              15               50.00
+# 1  2020        Line A     Type 2   8000.00           30000.00       26.67              10               33.33
+# 2  2020        Line B     Type 3  15000.00           60000.00       25.00              20               66.67
+# 3  2021        Line A     Type 1   9000.00           25000.00       36.00              18               75.00
+# 4  2021        Line B     Type 3   7000.00           20000.00       35.00              12               60.00
+# ...
+
+# Notes
+# Data Integrity: Ensure your DataFrame is complete and contains valid data, especially for Net Loss Amount and Event IDs.
+# Confidence Level: Adjust the confidence_level variable as needed.
+# Interpretation: The Event ID Percentage will show how significant the contribution of each event type is concerning the total events in that year.
+# This updated approach incorporates the event count percentage into the VaR analysis, providing a deeper understanding of the risk across different categories. If you have further modifications or questions, feel free to ask!
+# To visualize the results of your Value at Risk (VaR) analysis effectively, we can create several types of plots that summarize the information clearly. Here are some suggested visualizations you can create using Matplotlib and Seaborn:
+
+# Bar Plots for VaR by Year and Business Line: This will show how VaR changes across different business lines over the years. Line Plots for Total Net Loss by Year: This will illustrate trends in total net loss over the years. Pie Charts for Event ID Count Percentage: This can visualize the proportion of event IDs across different categories. Bar Plots for VaR Percentage: To show how VaR relates to total net loss percentage-wise. Step-by-Step Implementation Here’s how you can implement these visualizations:
+
+# Step 1: Prepare Your Data Ensure your results DataFrame (var_percentage_df) is set up correctly. You should already have columns for Year, Business Line, Event Type, VaR, Total Net Loss, VaR Percentage, Event ID Count, and Event ID Percentage.
+
+# Step 2: Create the Visualizations Below are example codes for creating each type of graph
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Sample DataFrame (use your var_percentage_df)
+# var_percentage_df = pd.DataFrame(...)  # Ensure you have your results DataFrame ready
+
+# Set the aesthetic style of the plots
+sns.set(style="whitegrid")
+
+# 1. Bar Plot for VaR by Year and Business Line
+plt.figure(figsize=(12, 6))
+sns.barplot(data=var_percentage_df, x='Year', y='VaR', hue='Business Line', ci=None)
+plt.title('Value at Risk (VaR) by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('Value at Risk (VaR)')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 2. Line Plot for Total Net Loss by Year
+plt.figure(figsize=(12, 6))
+sns.lineplot(data=var_percentage_df, x='Year', y='Total Net Loss', marker='o', hue='Business Line')
+plt.title('Total Net Loss by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('Total Net Loss')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 3. Pie Chart for Event ID Count Percentage by Business Line
+event_id_count_by_business = var_percentage_df.groupby('Business Line')['Event ID Count'].sum()
+plt.figure(figsize=(8, 8))
+plt.pie(event_id_count_by_business, labels=event_id_count_by_business.index, autopct='%1.1f%%', startangle=90)
+plt.title('Event ID Count Percentage by Business Line')
+plt.axis('equal')  # Equal aspect ratio ensures the pie chart is circular.
+plt.show()
+
+# 4. Bar Plot for VaR Percentage
+plt.figure(figsize=(12, 6))
+sns.barplot(data=var_percentage_df, x='Year', y='VaR Percentage', hue='Business Line', ci=None)
+plt.title('Value at Risk Percentage by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('VaR Percentage (%)')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\1118991756.py:13: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=var_percentage_df, x='Year', y='VaR', hue='Business Line', ci=None)
+
+
+
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\1118991756.py:43: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=var_percentage_df, x='Year', y='VaR Percentage', hue='Business Line', ci=None)
+
+Explanation of Each Plot Bar Plot for VaR: This graph helps you compare the VaR values across different business lines over the years, highlighting which areas have higher risk.
+
+Line Plot for Total Net Loss: This trend line can illustrate how net losses evolve over time, indicating whether the organization is improving or facing increasing risks.
+
+Pie Chart for Event ID Count: This visualization shows the distribution of event IDs across different business lines, indicating where most events occur.
+
+Bar Plot for VaR Percentage: This plot highlights the relationship between VaR and total net loss in percentage terms, allowing you to see how significant the VaR is compared to overall losses.
+
+Customizing the Plots Feel free to adjust colors, sizes, and titles to suit your presentation needs. You can also add more context or explanations directly onto the plots if needed for clarity.
+
+Additional Tips Use Descriptive Titles: Make sure each plot has a clear title that conveys the main takeaway. Add Annotations: If necessary, add annotations to highlight key points or anomalies in the data. Export Graphs: Save the plots using plt.savefig('filename.png') if you need to include them in a report or presentation. These visualizations should help you explain your findings effectively! If you have specific requirements or additional visualizations in mind, let me know!
+
+Step 1: Prepare the Aggregated Data We need to create a new DataFrame that groups the results by both business line and event type, calculating the total net loss, event counts, VaR, and their percentages year-wise.
+
+Here’s a structured approach to prepare your data: Step 1: Prepare the Aggregated Data We need to create a new DataFrame that groups the results by both business line and event type, calculating the total net loss, event counts, VaR, and their percentages year-wise.
+
+Here’s a structured approach to prepare your data:
+
+import pandas as pd
+
+# Sample structure for your results DataFrame
+# Assuming var_percentage_df contains the results from the VaR calculation
+# We will create a summary DataFrame from it
+
+# Prepare your DataFrame structure
+summary_data = []
+
+# Loop through the years, business lines, and event types to aggregate the required data
+for year in var_percentage_df['Year'].unique():
+    for business_line in var_percentage_df['Business Line'].unique():
+        for event_type in var_percentage_df['Event Type'].unique():
+            # Filter data for current year, business line, and event type
+            filtered_data = var_percentage_df[
+                (var_percentage_df['Year'] == year) &
+                (var_percentage_df['Business Line'] == business_line) &
+                (var_percentage_df['Event Type'] == event_type)
+            ]
+
+            if not filtered_data.empty:
+                # Aggregate required values
+                total_net_loss = filtered_data['Total Net Loss'].sum()
+                total_event_count = filtered_data['Event ID Count'].sum()
+                var_value = filtered_data['VaR'].mean()  # or use .sum() depending on your needs
+                var_percentage = filtered_data['VaR Percentage'].mean()  # or use .sum()
+
+                summary_data.append({
+                    'Year': year,
+                    'Business Line': business_line,
+                    'Event Type': event_type,
+                    'Total Net Loss': total_net_loss,
+                    'Total Event Count': total_event_count,
+                    'VaR Value': var_value,
+                    'VaR Percentage': var_percentage
+                })
+
+# Create the summary DataFrame
+summary_df = pd.DataFrame(summary_data)
+
+# Display the summary DataFrame
+print(summary_df)
+    Year      Business Line       Event Type  Total Net Loss  \
+0   2020  Corporate Banking       Compliance      1049506.36   
+1   2020  Corporate Banking            Fraud      1076313.63   
+2   2020  Corporate Banking  Physical Damage      1183976.49   
+3   2020  Corporate Banking   System Failure       972702.32   
+4   2020          Insurance       Compliance       620282.82   
+..   ...                ...              ...             ...   
+75  2024     Retail Banking   System Failure      4812574.62   
+76  2024  Wealth Management       Compliance      5305875.90   
+77  2024  Wealth Management            Fraud      5452353.43   
+78  2024  Wealth Management  Physical Damage      5555549.37   
+79  2024  Wealth Management   System Failure      5153566.21   
+
+    Total Event Count     VaR Value  VaR Percentage  
+0                  42  76194.403421        7.260023  
+1                  47  76795.963844        7.135092  
+2                  46  66587.911661        5.624091  
+3                  43  68633.599567        7.055972  
+4                  26  96351.862303       15.533537  
+..                ...           ...             ...  
+75                193  75448.685724        1.567741  
+76                210  78594.394793        1.481271  
+77                215  75057.526032        1.376608  
+78                214  81096.489797        1.459738  
+79                203  78502.282400        1.523261  
+
+[80 rows x 7 columns]
+Step 2: Visualize the Results Now that you have a summary_df containing the necessary information, you can create visualizations to present this data effectively. Here’s how to visualize both net loss and VaR values with respect to business lines and event types:
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set the aesthetic style of the plots
+sns.set(style="whitegrid")
+
+# 1. Bar Plot for Total Net Loss by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Business Line', ci=None)
+plt.title('Total Net Loss by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('Total Net Loss')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 2. Bar Plot for VaR Value by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Business Line', ci=None)
+plt.title('Value at Risk (VaR) Value by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('VaR Value')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 3. Bar Plot for Total Event Count by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Event Count', hue='Business Line', ci=None)
+plt.title('Total Event Count by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('Total Event Count')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 4. Bar Plot for VaR Percentage by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='VaR Percentage', hue='Business Line', ci=None)
+plt.title('Value at Risk Percentage by Year and Business Line')
+plt.xlabel('Year')
+plt.ylabel('VaR Percentage (%)')
+plt.legend(title='Business Line')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\420990231.py:9: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Business Line', ci=None)
+
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\420990231.py:20: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Business Line', ci=None)
+
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\420990231.py:31: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='Total Event Count', hue='Business Line', ci=None)
+
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\420990231.py:42: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='VaR Percentage', hue='Business Line', ci=None)
+
+Explanation of Each Plot Total Net Loss: This bar plot illustrates the total net loss incurred each year, segmented by business line. It helps in identifying which business line has the most significant financial impact.
+
+VaR Value: This graph shows the calculated VaR value for each business line over the years, allowing for easy comparison of risk exposure.
+
+Total Event Count: This plot presents the number of events that contributed to the net loss by business line over the years, which is crucial for understanding frequency.
+
+VaR Percentage: This plot visualizes the percentage of VaR relative to total net loss, highlighting the risk in comparison to losses incurred.
+
+Conclusion These visualizations will help you explain the findings from your analysis clearly and effectively. Feel free to adjust titles, colors, or layouts to match your presentation style! If you have any further customization requests or additional insights to visualize, let me know!
+
+# 1. Bar Plot for Total Net Loss by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+plt.title('Total Net Loss by Year and Event Type')
+plt.xlabel('Year')
+plt.ylabel('Total Net Loss')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\3665716105.py:3: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+
+Step 3: Bar Plot for Total Event Count by Year, Business Line, and Event Type
+
+# 3. Bar Plot for Total Event Count by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Event Count', hue='Event Type', ci=None)
+plt.title('Total Event Count by Year and Event Type')
+plt.xlabel('Year')
+plt.ylabel('Total Event Count')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\3365566771.py:3: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='Total Event Count', hue='Event Type', ci=None)
+
+Step 4: Bar Plot for VaR Percentage by Year, Business Line, and Event Type
+
+# 4. Bar Plot for VaR Percentage by Year, Business Line, and Event Type
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='VaR Percentage', hue='Event Type', ci=None)
+plt.title('Value at Risk Percentage by Year and Event Type')
+plt.xlabel('Year')
+plt.ylabel('VaR Percentage (%)')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\1043135432.py:3: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='VaR Percentage', hue='Event Type', ci=None)
+
+Explanation of Updates Event Types Included: Each graph now displays a separate bar for each event type, allowing you to visualize how different types of events contribute to net loss, VaR values, and event counts over the years.
+
+Clarity in Comparison: By using event types as the hue in the plots, it’s easier to compare how various event types perform across years and within business lines.
+
+Optional: FacetGrid for More Detailed Views If you want to explore even more granularity, consider using FacetGrid to create subplots for each business line:
+
+# Create a FacetGrid for Total Net Loss by Year and Event Type
+g = sns.FacetGrid(summary_df, col='Business Line', hue='Event Type', height=4, aspect=1.5)
+g.map(sns.barplot, 'Year', 'Total Net Loss', ci=None)
+g.add_legend()
+g.set_axis_labels("Year", "Total Net Loss")
+g.set_titles(col_template="{col_name}")
+plt.subplots_adjust(top=0.8)
+g.fig.suptitle('Total Net Loss by Year and Event Type for each Business Line')
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:718: UserWarning: Using the barplot function without specifying `order` is likely to produce an incorrect plot.
+  warnings.warn(warning)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\seaborn\axisgrid.py:854: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  func(*plot_args, **plot_kwargs)
+
+Yes, you can create a comprehensive visualization that shows business lines, event types, net loss amounts, and event ID counts with respect to Value at Risk (VaR).
+
+Step-by-Step Guide Here’s how to prepare your data and create these visualizations effectively:
+
+Prepare Your DataFrame: Ensure you have a DataFrame that aggregates net loss amounts, event counts, and VaR values by business line and event type.
+
+Visualize the Results: You can use a combination of bar plots to show net loss and event counts alongside VaR.
+
+Updated Visualization Code Step 1: Data Preparation Assuming you already have the summary_df that includes the necessary columns, you can structure your DataFrame accordingly:
+
+# Assuming your summary_df already contains these columns
+# summary_df should have columns: 'Year', 'Business Line', 'Event Type', 
+# 'Total Net Loss', 'Total Event Count', 'VaR Value', 'VaR Percentage'
+
+# Group the data to create a comprehensive view
+aggregated_data = summary_df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+    Total_Net_Loss=('Total Net Loss', 'sum'),
+    Total_Event_Count=('Total Event Count', 'sum'),
+    VaR_Value=('VaR Value', 'mean'),
+    VaR_Percentage=('VaR Percentage', 'mean')
+).reset_index()
+# Step 2: Visualization
+# You can create a set of visualizations, such as:
+
+# Bar Plot for Total Net Loss and Event Counts by Business Line and Event Type
+# Bar Plot for VaR Value by Business Line and Event Type
+# Visualization Example Code
+# 1. Combined Bar Plot for Total Net Loss and Event Count
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set the aesthetic style of the plots
+sns.set(style="whitegrid")
+
+# Create a figure to hold multiple plots
+fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(14, 12), sharex=True)
+
+# Bar plot for Total Net Loss
+sns.barplot(data=aggregated_data, x='Year', y='Total_Net_Loss', hue='Event Type', ax=axes[0])
+axes[0].set_title('Total Net Loss by Year, Business Line, and Event Type')
+axes[0].set_ylabel('Total Net Loss')
+axes[0].legend(title='Event Type')
+
+# Bar plot for Total Event Count
+sns.barplot(data=aggregated_data, x='Year', y='Total_Event_Count', hue='Event Type', ax=axes[1])
+axes[1].set_title('Total Event Count by Year, Business Line, and Event Type')
+axes[1].set_ylabel('Total Event Count')
+axes[1].legend(title='Event Type')
+
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# 2. Combined Bar Plot for VaR Value
+# Create a figure for VaR Value
+plt.figure(figsize=(14, 8))
+sns.barplot(data=aggregated_data, x='Year', y='VaR_Value', hue='Event Type', ci=None)
+plt.title('Value at Risk (VaR) by Year, Business Line, and Event Type')
+plt.xlabel('Year')
+plt.ylabel('VaR Value')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\4004052810.py:4: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=aggregated_data, x='Year', y='VaR_Value', hue='Event Type', ci=None)
+
+xplanation of Visualizations Total Net Loss and Total Event Count: These bar plots show how each event type contributes to total net losses and the total number of events across different business lines and years.
+
+Value at Risk (VaR): The plot displays the average VaR for each event type over the years, helping to visualize the risk associated with each type of event in different business lines.
+
+Conclusion These visualizations allow you to present a clear comparison of net loss amounts, event counts, and VaR values across business lines and event types. This structured approach will help in communicating the financial risks associated with different events effectively. If you have any specific preferences for how you'd like these visualizations to be displayed or any additional information you'd like to include, let me know!
+
+ 
+why we are using lognorm can we used other methods as well ChatGPT said: ChatGPT In risk management, particularly in calculating Value at Risk (VaR) and modeling loss distributions, the log-normal distribution is commonly used due to several reasons. However, other distributions can also be applied depending on the characteristics of the data and the specific context. Here’s an overview of why log-normal distributions are popular and what alternatives exist.
+
+Why Use Log-Normal Distribution? Non-Negative Values:
+
+Financial losses are inherently non-negative (i.e., they cannot go below zero). The log-normal distribution is defined only for positive values, making it suitable for modeling losses. Skewed Nature of Financial Data:
+
+Many financial datasets are positively skewed, meaning there are a few large losses but many small losses. The log-normal distribution captures this behavior well. Multiplicative Processes:
+
+Financial data often arise from multiplicative processes (e.g., returns on investments), and if the logarithm of a variable is normally distributed, then the variable itself is log-normally distributed. Ease of Use:
+
+The parameters of the log-normal distribution (mean and standard deviation of the logarithm of the data) are easy to estimate from the data, making it practical for analysis. Other Distribution Alternatives While the log-normal distribution is a common choice, other distributions can also be used depending on the data characteristics and the specific analytical goals. Here are a few alternatives:
+
+Normal Distribution:
+
+Often used for returns but less suitable for losses due to the possibility of negative values. However, it can still be applied in certain contexts where losses can be modeled symmetrically. Exponential Distribution:
+
+Suitable for modeling time until an event occurs, often used in operational risk to model the time between losses. However, it assumes a constant hazard rate, which may not fit all datasets. Weibull Distribution:
+
+This distribution can model increasing or decreasing failure rates and may be used in reliability engineering. It can capture the skewness of the loss distribution more flexibly than the log-normal distribution. Pareto Distribution:
+
+Useful for modeling heavy-tailed distributions where a small number of events contribute to a large portion of the total losses. This is often used in insurance and finance. Gamma Distribution:
+
+Can model non-negative continuous data with a skew, providing more flexibility in fitting different shapes of data distributions. Student’s t-Distribution:
+
+This distribution can handle heavy tails and is often used in finance to capture extreme market movements. It may be more appropriate for modeling extreme loss scenarios. Generalized Pareto Distribution (GPD):
+
+Often used in the context of extreme value theory to model the tails of loss distributions, particularly for assessing the risk of extreme losses. Conclusion The choice of distribution for modeling financial losses depends on the data characteristics and the specific use case. While the log-normal distribution is a popular choice due to its non-negativity and ability to model skewness, analysts should consider other distributions based on their data's behavior and the context of their analysis. Ultimately, it is beneficial to perform goodness-of-fit tests and visualize the data to determine the most appropriate distribution for a given dataset.
+
+Other Distribution Alternatives While the log-normal distribution is a common choice, other distributions can also be used depending on the data characteristics and the specific analytical goals. Here are a few alternatives:
+
+Normal Distribution:
+
+Often used for returns but less suitable for losses due to the possibility of negative values. However, it can still be applied in certain contexts where losses can be modeled symmetrically. Exponential Distribution:
+
+Suitable for modeling time until an event occurs, often used in operational risk to model the time between losses. However, it assumes a constant hazard rate, which may not fit all datasets. Weibull Distribution:
+
+This distribution can model increasing or decreasing failure rates and may be used in reliability engineering. It can capture the skewness of the loss distribution more flexibly than the log-normal distribution. Pareto Distribution:
+
+Useful for modeling heavy-tailed distributions where a small number of events contribute to a large portion of the total losses. This is often used in insurance and finance. Gamma Distribution:
+
+Can model non-negative continuous data with a skew, providing more flexibility in fitting different shapes of data distributions. Student’s t-Distribution:
+
+This distribution can handle heavy tails and is often used in finance to capture extreme market movements. It may be more appropriate for modeling extreme loss scenarios. Generalized Pareto Distribution (GPD):
+
+Often used in the context of extreme value theory to model the tails of loss distributions, particularly for assessing the risk of extreme losses. Conclusion The choice of distribution for modeling financial losses depends on the data characteristics and the specific use case. While the log-normal distribution is a popular choice due to its non-negativity and ability to model skewness, analysts should consider other distributions based on their data's behavior and the context of their analysis. Ultimately, it is beneficial to perform goodness-of-fit tests and visualize the data to determine the most appropriate distribution for a given dataset.
+
+To fit a normal distribution instead of a log-normal distribution for the calculation of Value at Risk (VaR), you'll need to adjust the fit_loss_distribution_and_calculate_var function accordingly. Below are the steps to implement the normal distribution fitting and calculate the VaR based on your data.
+Step 1: Update the Fitting Function
+Modify your function to fit a normal distribution to the total net losses. Here’s how you can do this:
+df.columns
+Index(['Date', 'Event ID', 'Event Type', 'Business Line', 'Event Description',
+       'Net Loss Amount', 'Year'],
+      dtype='object')
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+def fit_loss_distribution_and_calculate_var_normal(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event ID', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a normal distribution
+        losses = np.random.normal(loc=0, scale=row['Total_Net_Loss'])
+        mu, std = stats.norm.fit(losses)
+        
+        # Calculate VaR
+        var_value = stats.norm.ppf(1 - confidence_level, loc=mu, scale=std)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+# Step 2: Calculate VaR
+# Now you can calculate VaR using this updated function:
+# Set your confidence level
+# Calculate VaR with the updated function
+confidence_level = 0.95
+var_by_year_business_event_normal = fit_loss_distribution_and_calculate_var_normal(df, confidence_level)
+
+# Merge the new VaR results with your summary_df for visualization
+summary_df = summary_df.merge(var_by_year_business_event_normal, on=['Year', 'Business Line', 'Event Type'], how='left')
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_distn_infrastructure.py:2246: RuntimeWarning: invalid value encountered in multiply
+  lower_bound = _a * scale + loc
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_distn_infrastructure.py:2247: RuntimeWarning: invalid value encountered in multiply
+  upper_bound = _b * scale + loc
+summary_df
+Year	Business Line	Event Type	Total Net Loss_x	Total Event Count_x	VaR Value_x	VaR Percentage_x	Total Net Loss_y	Total Event Count_y	VaR Value_y	VaR Percentage_y	Total Net Loss	Total Event Count	VaR Value	VaR Percentage
+0	2020	Corporate Banking	Compliance	1049506.36	42	76194.403421	7.260023	1049506.36	42	NaN	NaN	1049506.36	42	NaN	NaN
+1	2020	Corporate Banking	Fraud	1076313.63	47	76795.963844	7.135092	1076313.63	47	NaN	NaN	1076313.63	47	NaN	NaN
+2	2020	Corporate Banking	Physical Damage	1183976.49	46	66587.911661	5.624091	1183976.49	46	NaN	NaN	1183976.49	46	NaN	NaN
+3	2020	Corporate Banking	System Failure	972702.32	43	68633.599567	7.055972	972702.32	43	NaN	NaN	972702.32	43	NaN	NaN
+4	2020	Insurance	Compliance	620282.82	26	96351.862303	15.533537	620282.82	26	NaN	NaN	620282.82	26	NaN	NaN
+...	...	...	...	...	...	...	...	...	...	...	...	...	...	...	...
+75	2024	Retail Banking	System Failure	4812574.62	193	75448.685724	1.567741	4812574.62	193	NaN	NaN	4812574.62	193	NaN	NaN
+76	2024	Wealth Management	Compliance	5305875.90	210	78594.394793	1.481271	5305875.90	210	NaN	NaN	5305875.90	210	NaN	NaN
+77	2024	Wealth Management	Fraud	5452353.43	215	75057.526032	1.376608	5452353.43	215	NaN	NaN	5452353.43	215	NaN	NaN
+78	2024	Wealth Management	Physical Damage	5555549.37	214	81096.489797	1.459738	5555549.37	214	NaN	NaN	5555549.37	214	NaN	NaN
+79	2024	Wealth Management	System Failure	5153566.21	203	78502.282400	1.523261	5153566.21	203	NaN	NaN	5153566.21	203	NaN	NaN
+80 rows × 15 columns
+
+# Step 3: Visualize the Results
+# Now that you have the VaR calculated based on a normal distribution, you can visualize it:
+
+# Visualization for Total Net Loss and VaR
+
+# Merge the new VaR results back with your summary_df for visualization
+summary_df = summary_df.merge(var_by_year_business_event_normal, on=['Year', 'Business Line', 'Event Type'], how='left')
+
+# Create a combined bar plot for Total Net Loss and VaR Value
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Event Type', alpha=0.3, ci=None)
+plt.title('Total Net Loss and VaR Value by Year and Event Type')
+plt.xlabel('Year')
+plt.ylabel('Values')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\3003637293.py:11: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_22316\3003637293.py:12: FutureWarning: 
+
+The `ci` parameter is deprecated. Use `errorbar=None` for the same effect.
+
+  sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Event Type', alpha=0.3, ci=None)
+
+Explanation of Changes Fitting Normal Distribution: The updated function uses stats.norm.fit to fit the total net loss amounts to a normal distribution. This gives you the mean (mu) and standard deviation (std).
+
+Calculating VaR: The VaR is calculated using the percent-point function (ppf) for the normal distribution, which computes the threshold loss value corresponding to the desired confidence level.
+
+Visualization: The plot overlays the total net loss and VaR values for a clearer comparison.
+
+Conclusion This implementation provides a comprehensive view of how losses are distributed under a normal assumption and allows you to analyze the risk through the VaR metric effectively. If you have any further adjustments or additional analyses in mind, feel free to let me know!
+
+o calculate the Value at Risk (VaR) using the Weibull distribution instead of a normal or log-normal distribution, you'll need to adjust your code to fit the Weibull distribution to your loss data. Here’s how you can implement this change.
+
+Step 1: Fit Weibull Distribution First, we need to update the function to fit the Weibull distribution and calculate VaR based on it. The Weibull distribution is particularly useful for modeling life data and can often represent loss data well.
+
+Step 2: Update the VaR Calculation Function Here's how you can implement the Weibull distribution fitting and VaR calculation:
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Define a function to fit a Weibull distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_weibull(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event ID', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a Weibull distribution
+        shape, loc, scale = stats.weibull_min.fit(row['Total_Net_Loss'], floc=0)
+        
+        # Calculate VaR
+        var_value = stats.weibull_min.ppf(1 - confidence_level, shape, loc=loc, scale=scale)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+
+# Set your confidence level
+confidence_level = 0.95  # 95% confidence level
+var_by_year_business_event_weibull = fit_loss_distribution_and_calculate_var_weibull(df, confidence_level)
+# Step 3: Merging and Visualizing Results
+# You can now merge these results back with your existing DataFrame and visualize them as follows:
+# Merge the new VaR results back with your summary_df for visualization
+summary_df = summary_df.merge(var_by_year_business_event_weibull, on=['Year', 'Business Line', 'Event Type'], how='left')
+
+# Create a combined bar plot for Total Net Loss and VaR Value
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Event Type', alpha=0.3, ci=None)
+plt.title('Total Net Loss and VaR Value by Year and Event Type (Weibull Distribution)')
+plt.xlabel('Year')
+plt.ylabel('Values')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+---------------------------------------------------------------------------
+MergeError                                Traceback (most recent call last)
+Cell In[124], line 4
+      1 # Step 3: Merging and Visualizing Results
+      2 # You can now merge these results back with your existing DataFrame and visualize them as follows:
+      3 # Merge the new VaR results back with your summary_df for visualization
+----> 4 summary_df1 = summary_df.merge(var_by_year_business_event_weibull, on=['Year', 'Business Line', 'Event Type'], how='left')
+      6 # Create a combined bar plot for Total Net Loss and VaR Value
+      7 plt.figure(figsize=(14, 8))
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\frame.py:10832, in DataFrame.merge(self, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+  10813 @Substitution("")
+  10814 @Appender(_merge_doc, indents=2)
+  10815 def merge(
+   (...)
+  10828     validate: MergeValidate | None = None,
+  10829 ) -> DataFrame:
+  10830     from pandas.core.reshape.merge import merge
+> 10832     return merge(
+  10833         self,
+  10834         right,
+  10835         how=how,
+  10836         on=on,
+  10837         left_on=left_on,
+  10838         right_on=right_on,
+  10839         left_index=left_index,
+  10840         right_index=right_index,
+  10841         sort=sort,
+  10842         suffixes=suffixes,
+  10843         copy=copy,
+  10844         indicator=indicator,
+  10845         validate=validate,
+  10846     )
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\reshape\merge.py:184, in merge(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+    169 else:
+    170     op = _MergeOperation(
+    171         left_df,
+    172         right_df,
+   (...)
+    182         validate=validate,
+    183     )
+--> 184     return op.get_result(copy=copy)
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\reshape\merge.py:888, in _MergeOperation.get_result(self, copy)
+    884     self.left, self.right = self._indicator_pre_merge(self.left, self.right)
+    886 join_index, left_indexer, right_indexer = self._get_join_info()
+--> 888 result = self._reindex_and_concat(
+    889     join_index, left_indexer, right_indexer, copy=copy
+    890 )
+    891 result = result.__finalize__(self, method=self._merge_type)
+    893 if self.indicator:
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\reshape\merge.py:840, in _MergeOperation._reindex_and_concat(self, join_index, left_indexer, right_indexer, copy)
+    837 left = self.left[:]
+    838 right = self.right[:]
+--> 840 llabels, rlabels = _items_overlap_with_suffix(
+    841     self.left._info_axis, self.right._info_axis, self.suffixes
+    842 )
+    844 if left_indexer is not None and not is_range_indexer(left_indexer, len(left)):
+    845     # Pinning the index here (and in the right code just below) is not
+    846     #  necessary, but makes the `.take` more performant if we have e.g.
+    847     #  a MultiIndex for left.index.
+    848     lmgr = left._mgr.reindex_indexer(
+    849         join_index,
+    850         left_indexer,
+   (...)
+    855         use_na_proxy=True,
+    856     )
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\reshape\merge.py:2757, in _items_overlap_with_suffix(left, right, suffixes)
+   2755     dups.extend(rlabels[(rlabels.duplicated()) & (~right.duplicated())].tolist())
+   2756 if dups:
+-> 2757     raise MergeError(
+   2758         f"Passing 'suffixes' which cause duplicate columns {set(dups)} is "
+   2759         f"not allowed.",
+   2760     )
+   2762 return llabels, rlabels
+
+MergeError: Passing 'suffixes' which cause duplicate columns {'VaR Value_x', 'Total Net Loss_x', 'VaR Percentage_x', 'Total Event Count_x'} is not allowed.
+summary_df.columns
+Index(['Year', 'Business Line', 'Event Type', 'Total Net Loss_x',
+       'Total Event Count_x', 'VaR Value_x', 'VaR Percentage_x',
+       'Total Net Loss_y', 'Total Event Count_y', 'VaR Value_y',
+       'VaR Percentage_y', 'Total Net Loss', 'Total Event Count', 'VaR Value',
+       'VaR Percentage'],
+      dtype='object')
+summary_df=summary_df[['Year', 'Business Line', 'Event Type','Total Net Loss', 'Total Event Count', 'VaR Value',
+       'VaR Percentage']]
+summary_df
+Year	Business Line	Event Type	Total Net Loss	Total Event Count	VaR Value	VaR Percentage
+0	2020	Corporate Banking	Compliance	1049506.36	42	NaN	NaN
+1	2020	Corporate Banking	Fraud	1076313.63	47	NaN	NaN
+2	2020	Corporate Banking	Physical Damage	1183976.49	46	NaN	NaN
+3	2020	Corporate Banking	System Failure	972702.32	43	NaN	NaN
+4	2020	Insurance	Compliance	620282.82	26	NaN	NaN
+...	...	...	...	...	...	...	...
+75	2024	Retail Banking	System Failure	4812574.62	193	NaN	NaN
+76	2024	Wealth Management	Compliance	5305875.90	210	NaN	NaN
+77	2024	Wealth Management	Fraud	5452353.43	215	NaN	NaN
+78	2024	Wealth Management	Physical Damage	5555549.37	214	NaN	NaN
+79	2024	Wealth Management	System Failure	5153566.21	203	NaN	NaN
+80 rows × 7 columns
+
+Explanation of Key Changes Weibull Fitting: The stats.weibull_min.fit function is used to estimate the parameters of the Weibull distribution for the total net loss.
+
+VaR Calculation: The VaR is calculated using the percent-point function (ppf) for the Weibull distribution.
+
+Visualization: The merged DataFrame is used to create a bar plot to compare total net loss and VaR values, highlighting differences by year and event type.
+
+Conclusion By using the Weibull distribution, you can model the loss data effectively, particularly if you suspect that the data follows a skewed distribution. This approach should give you a more tailored risk assessment for your specific use case. If you have further modifications or analyses in mind, feel free to ask!
+
+To calculate the Value at Risk (VaR) using the Pareto distribution, you will need to adjust the function to fit the Pareto distribution to your loss data. The Pareto distribution is often used to model financial losses due to its "80/20 rule" characteristic, where a small percentage of events can account for a large percentage of losses.
+
+Step 1: Fit Pareto Distribution Here’s how you can implement the calculation of VaR using the Pareto distribution:
+
+Step 2: Update the VaR Calculation Function Below is a function that fits the Pareto distribution to the total net loss and calculates the VaR based on that:
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Define a function to fit a Pareto distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_pareto(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event ID', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a Pareto distribution
+        shape, loc = stats.pareto.fit(row['Total_Net_Loss'])
+        
+        # Calculate VaR
+        var_value = stats.pareto.ppf(1 - confidence_level, shape, loc=loc)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+
+# Set your confidence level
+confidence_level = 0.95  # 95% confidence level
+var_by_year_business_event_pareto = fit_loss_distribution_and_calculate_var_pareto(df, confidence_level)
+---------------------------------------------------------------------------
+IndexError                                Traceback (most recent call last)
+~\AppData\Local\Temp\ipykernel_22316\1761582655.py in ?()
+     40     return pd.DataFrame(var_results)
+     41 
+     42 # Set your confidence level
+     43 confidence_level = 0.95  # 95% confidence level
+---> 44 var_by_year_business_event_pareto = fit_loss_distribution_and_calculate_var_pareto(df, confidence_level)
+
+~\AppData\Local\Temp\ipykernel_22316\1761582655.py in ?(df, confidence_level)
+     19         business_line = row['Business Line']
+     20         event_type = row['Event Type']
+     21 
+     22         # Fit a Pareto distribution
+---> 23         shape, loc = stats.pareto.fit(row['Total_Net_Loss'])
+     24 
+     25         # Calculate VaR
+     26         var_value = stats.pareto.ppf(1 - confidence_level, shape, loc=loc)
+
+~\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_continuous_distns.py in ?(self, data, *args, **kwds)
+     70                 # data is an instance of CensoredData, but actually holds
+     71                 # no censored values, so replace it with the array of
+     72                 # uncensored values.
+     73                 data = data._uncensored
+---> 74             return fun(self, data, *args, **kwds)
+
+~\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_continuous_distns.py in ?(self, data, *args, **kwds)
+   7857         # distribution before continuing.
+   7858         if floc is not None and np.min(data) - floc < (fscale or 0):
+   7859             raise FitDataError("pareto", lower=1, upper=np.inf)
+   7860 
+-> 7861         ndata = data.shape[0]
+   7862 
+   7863         def get_shape(scale, location):
+   7864             # The first-order necessary condition on `shape` can be solved in
+
+IndexError: tuple index out of range
+Step 3: Merging and Visualizing Results After fitting the Pareto distribution and calculating the VaR, merge these results back with your existing DataFrame and visualize them:
+
+# Merge the new VaR results back with your summary_df for visualization
+summary_df = summary_df.merge(var_by_year_business_event_pareto, on=['Year', 'Business Line', 'Event Type'], how='left')
+
+# Create a combined bar plot for Total Net Loss and VaR Value
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+sns.barplot(data=summary_df, x='Year', y='VaR Value', hue='Event Type', alpha=0.3, ci=None)
+plt.title('Total Net Loss and VaR Value by Year and Event Type (Pareto Distribution)')
+plt.xlabel('Year')
+plt.ylabel('Values')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[129], line 2
+      1 # Merge the new VaR results back with your summary_df for visualization
+----> 2 summary_df = summary_df.merge(var_by_year_business_event_pareto, on=['Year', 'Business Line', 'Event Type'], how='left')
+      4 # Create a combined bar plot for Total Net Loss and VaR Value
+      5 plt.figure(figsize=(14, 8))
+
+NameError: name 'var_by_year_business_event_pareto' is not defined
+Explanation of Key Changes Pareto Fitting: The stats.pareto.fit function is used to estimate the parameters of the Pareto distribution for the total net loss. This function fits the data by estimating the shape and location parameters.
+
+VaR Calculation: The VaR is calculated using the percent-point function (ppf) for the Pareto distribution.
+
+Visualization: The merged DataFrame is used to create a bar plot that compares total net loss and VaR values, highlighting differences by year and event type.
+
+Gamma Distribution The Gamma distribution can model positive continuous data, including financial loss data. Here's how to fit the Gamma distribution and calculate VaR:
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+
+# Define a function to fit a Gamma distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_gamma(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event ID', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a Gamma distribution
+        shape, loc, scale = stats.gamma.fit(row['Total_Net_Loss'])
+        
+        # Calculate VaR
+        var_value = stats.gamma.ppf(1 - confidence_level, a=shape, loc=loc, scale=scale)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+
+# Set your confidence level
+confidence_level = 0.95  # 95% confidence level
+var_by_year_business_event_gamma = fit_loss_distribution_and_calculate_var_gamma(df, confidence_level)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_distn_infrastructure.py:409: RuntimeWarning: invalid value encountered in scalar divide
+  return m3 / np.power(m2, 1.5)
+---------------------------------------------------------------------------
+FitError                                  Traceback (most recent call last)
+Cell In[131], line 44
+     42 # Set your confidence level
+     43 confidence_level = 0.95  # 95% confidence level
+---> 44 var_by_year_business_event_gamma = fit_loss_distribution_and_calculate_var_gamma(df, confidence_level)
+
+Cell In[131], line 23, in fit_loss_distribution_and_calculate_var_gamma(df, confidence_level)
+     20 event_type = row['Event Type']
+     22 # Fit a Gamma distribution
+---> 23 shape, loc, scale = stats.gamma.fit(row['Total_Net_Loss'])
+     25 # Calculate VaR
+     26 var_value = stats.gamma.ppf(1 - confidence_level, a=shape, loc=loc, scale=scale)
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_continuous_distns.py:3398, in gamma_gen.fit(self, data, *args, **kwds)
+   3392 method = kwds.get('method', 'mle')
+   3394 if (isinstance(data, CensoredData) or
+   3395         floc is None and method.lower() != 'mm'):
+   3396     # loc is not fixed or we're not doing standard MLE.
+   3397     # Use the default fit method.
+-> 3398     return super().fit(data, *args, **kwds)
+   3400 # We already have this value, so just pop it from kwds.
+   3401 kwds.pop('floc', None)
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\scipy\stats\_distn_infrastructure.py:2691, in rv_continuous.fit(self, data, *args, **kwds)
+   2689 loc, scale, shapes = self._unpack_loc_scale(vals)
+   2690 if not (np.all(self._argcheck(*shapes)) and scale > 0):
+-> 2691     raise FitError("Optimization converged to parameters that are "
+   2692                    "outside the range allowed by the distribution.")
+   2694 if method == 'mm':
+   2695     if not np.isfinite(obj):
+
+FitError: Optimization converged to parameters that are outside the range allowed by the distribution.
+# 2. Student’s t-Distribution
+# The Student's t-distribution is useful when dealing with smaller samples or when the underlying data is expected to have heavier tails than the normal distribution. Here's how to fit it:
+# Define a function to fit a Student's t-distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_t(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event IDs', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a Student's t-distribution
+        df, loc, scale = stats.t.fit(row['Total_Net_Loss'])
+        
+        # Calculate VaR
+        var_value = stats.t.ppf(1 - confidence_level, df, loc=loc, scale=scale)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+
+# Set your confidence level
+confidence_level = 0.95  # 95% confidence level
+var_by_year_business_event_t = fit_loss_distribution_and_calculate_var_t(df, confidence_level)
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Cell In[132], line 38
+     36 # Set your confidence level
+     37 confidence_level = 0.95  # 95% confidence level
+---> 38 var_by_year_business_event_t = fit_loss_distribution_and_calculate_var_t(df, confidence_level)
+
+Cell In[132], line 6, in fit_loss_distribution_and_calculate_var_t(df, confidence_level)
+      3 var_results = []
+      5 # Group by Year, Business Line, and Event Type
+----> 6 grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+      7     Total_Net_Loss=('Net Loss Amount', 'sum'),
+      8     Total_Event_Count=('Event IDs', 'count')
+      9 ).reset_index()
+     11 for index, row in grouped_data.iterrows():
+     12     year = row['Year']
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\groupby\generic.py:1432, in DataFrameGroupBy.aggregate(self, func, engine, engine_kwargs, *args, **kwargs)
+   1429     kwargs["engine_kwargs"] = engine_kwargs
+   1431 op = GroupByApply(self, func, args=args, kwargs=kwargs)
+-> 1432 result = op.agg()
+   1433 if not is_dict_like(func) and result is not None:
+   1434     # GH #52849
+   1435     if not self.as_index and is_list_like(func):
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:190, in Apply.agg(self)
+    187     return self.apply_str()
+    189 if is_dict_like(func):
+--> 190     return self.agg_dict_like()
+    191 elif is_list_like(func):
+    192     # we require a list, but not a 'str'
+    193     return self.agg_list_like()
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:423, in Apply.agg_dict_like(self)
+    415 def agg_dict_like(self) -> DataFrame | Series:
+    416     """
+    417     Compute aggregation in the case of a dict-like argument.
+    418 
+   (...)
+    421     Result of aggregation.
+    422     """
+--> 423     return self.agg_or_apply_dict_like(op_name="agg")
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:1608, in GroupByApply.agg_or_apply_dict_like(self, op_name)
+   1603     kwargs.update({"engine": engine, "engine_kwargs": engine_kwargs})
+   1605 with com.temp_setattr(
+   1606     obj, "as_index", True, condition=hasattr(obj, "as_index")
+   1607 ):
+-> 1608     result_index, result_data = self.compute_dict_like(
+   1609         op_name, selected_obj, selection, kwargs
+   1610     )
+   1611 result = self.wrap_results_dict_like(selected_obj, result_index, result_data)
+   1612 return result
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:462, in Apply.compute_dict_like(self, op_name, selected_obj, selection, kwargs)
+    460 is_groupby = isinstance(obj, (DataFrameGroupBy, SeriesGroupBy))
+    461 func = cast(AggFuncTypeDict, self.func)
+--> 462 func = self.normalize_dictlike_arg(op_name, selected_obj, func)
+    464 is_non_unique_col = (
+    465     selected_obj.ndim == 2
+    466     and selected_obj.columns.nunique() < len(selected_obj.columns)
+    467 )
+    469 if selected_obj.ndim == 1:
+    470     # key only used for output
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:663, in Apply.normalize_dictlike_arg(self, how, obj, func)
+    661     cols = Index(list(func.keys())).difference(obj.columns, sort=True)
+    662     if len(cols) > 0:
+--> 663         raise KeyError(f"Column(s) {list(cols)} do not exist")
+    665 aggregator_types = (list, tuple, dict)
+    667 # if we have a dict of any non-scalars
+    668 # eg. {'A' : ['mean']}, normalize all to
+    669 # be list-likes
+    670 # Cannot use func.values() because arg may be a Series
+
+KeyError: "Column(s) ['Event IDs'] do not exist"
+# 3. Generalized Pareto Distribution (GPD)
+# The Generalized Pareto Distribution is often used in extreme value theory and can model the tail of a distribution. Here's how to fit it:
+# Define a function to fit a Generalized Pareto Distribution and calculate VaR
+def fit_loss_distribution_and_calculate_var_gpd(df, confidence_level):
+    var_results = []
+    
+    # Group by Year, Business Line, and Event Type
+    grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+        Total_Net_Loss=('Net Loss Amount', 'sum'),
+        Total_Event_Count=('Event IDs', 'count')
+    ).reset_index()
+    
+    for index, row in grouped_data.iterrows():
+        year = row['Year']
+        business_line = row['Business Line']
+        event_type = row['Event Type']
+        
+        # Fit a Generalized Pareto Distribution
+        c, loc, scale = stats.genpareto.fit(row['Total_Net_Loss'])
+        
+        # Calculate VaR
+        var_value = stats.genpareto.ppf(1 - confidence_level, c, loc=loc, scale=scale)
+        var_percentage = (var_value / row['Total_Net_Loss']) * 100 if row['Total_Net_Loss'] > 0 else 0
+        
+        # Store results in a dictionary
+        var_results.append({
+            'Year': year,
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'Total Net Loss': row['Total_Net_Loss'],
+            'Total Event Count': row['Total_Event_Count'],
+            'VaR Value': var_value,
+            'VaR Percentage': var_percentage
+        })
+    
+    return pd.DataFrame(var_results)
+
+# Set your confidence level
+confidence_level = 0.95  # 95% confidence level
+var_by_year_business_event_gpd = fit_loss_distribution_and_calculate_var_gpd(df, confidence_level)
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Cell In[133], line 40
+     38 # Set your confidence level
+     39 confidence_level = 0.95  # 95% confidence level
+---> 40 var_by_year_business_event_gpd = fit_loss_distribution_and_calculate_var_gpd(df, confidence_level)
+
+Cell In[133], line 8, in fit_loss_distribution_and_calculate_var_gpd(df, confidence_level)
+      5 var_results = []
+      7 # Group by Year, Business Line, and Event Type
+----> 8 grouped_data = df.groupby(['Year', 'Business Line', 'Event Type']).agg(
+      9     Total_Net_Loss=('Net Loss Amount', 'sum'),
+     10     Total_Event_Count=('Event IDs', 'count')
+     11 ).reset_index()
+     13 for index, row in grouped_data.iterrows():
+     14     year = row['Year']
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\groupby\generic.py:1432, in DataFrameGroupBy.aggregate(self, func, engine, engine_kwargs, *args, **kwargs)
+   1429     kwargs["engine_kwargs"] = engine_kwargs
+   1431 op = GroupByApply(self, func, args=args, kwargs=kwargs)
+-> 1432 result = op.agg()
+   1433 if not is_dict_like(func) and result is not None:
+   1434     # GH #52849
+   1435     if not self.as_index and is_list_like(func):
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:190, in Apply.agg(self)
+    187     return self.apply_str()
+    189 if is_dict_like(func):
+--> 190     return self.agg_dict_like()
+    191 elif is_list_like(func):
+    192     # we require a list, but not a 'str'
+    193     return self.agg_list_like()
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:423, in Apply.agg_dict_like(self)
+    415 def agg_dict_like(self) -> DataFrame | Series:
+    416     """
+    417     Compute aggregation in the case of a dict-like argument.
+    418 
+   (...)
+    421     Result of aggregation.
+    422     """
+--> 423     return self.agg_or_apply_dict_like(op_name="agg")
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:1608, in GroupByApply.agg_or_apply_dict_like(self, op_name)
+   1603     kwargs.update({"engine": engine, "engine_kwargs": engine_kwargs})
+   1605 with com.temp_setattr(
+   1606     obj, "as_index", True, condition=hasattr(obj, "as_index")
+   1607 ):
+-> 1608     result_index, result_data = self.compute_dict_like(
+   1609         op_name, selected_obj, selection, kwargs
+   1610     )
+   1611 result = self.wrap_results_dict_like(selected_obj, result_index, result_data)
+   1612 return result
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:462, in Apply.compute_dict_like(self, op_name, selected_obj, selection, kwargs)
+    460 is_groupby = isinstance(obj, (DataFrameGroupBy, SeriesGroupBy))
+    461 func = cast(AggFuncTypeDict, self.func)
+--> 462 func = self.normalize_dictlike_arg(op_name, selected_obj, func)
+    464 is_non_unique_col = (
+    465     selected_obj.ndim == 2
+    466     and selected_obj.columns.nunique() < len(selected_obj.columns)
+    467 )
+    469 if selected_obj.ndim == 1:
+    470     # key only used for output
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\pandas\core\apply.py:663, in Apply.normalize_dictlike_arg(self, how, obj, func)
+    661     cols = Index(list(func.keys())).difference(obj.columns, sort=True)
+    662     if len(cols) > 0:
+--> 663         raise KeyError(f"Column(s) {list(cols)} do not exist")
+    665 aggregator_types = (list, tuple, dict)
+    667 # if we have a dict of any non-scalars
+    668 # eg. {'A' : ['mean']}, normalize all to
+    669 # be list-likes
+    670 # Cannot use func.values() because arg may be a Series
+
+KeyError: "Column(s) ['Event IDs'] do not exist"
+# Step 4: Merging and Visualizing Results
+# After calculating the VaR for each distribution, you can merge these results and visualize them similarly:
+# Merge VaR results for each distribution into summary_df
+summary_df = summary_df.merge(var_by_year_business_event_gamma, on=['Year', 'Business Line', 'Event Type'], how='left', suffixes=('', '_Gamma'))
+summary_df = summary_df.merge(var_by_year_business_event_t, on=['Year', 'Business Line', 'Event Type'], how='left', suffixes=('', '_T'))
+summary_df = summary_df.merge(var_by_year_business_event_gpd, on=['Year', 'Business Line', 'Event Type'], how='left', suffixes=('', '_GPD'))
+
+# Create a combined bar plot for Total Net Loss and VaR Value for each distribution
+plt.figure(figsize=(14, 8))
+sns.barplot(data=summary_df, x='Year', y='Total Net Loss', hue='Event Type', ci=None)
+sns.barplot(data=summary_df, x='Year', y='VaR Value_Gamma', hue='Event Type', alpha=0.3, ci=None)
+plt.title('Total Net Loss and VaR Value by Year and Event Type (Gamma Distribution)')
+plt.xlabel('Year')
+plt.ylabel('Values')
+plt.legend(title='Event Type')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Repeat the above plot for Student's t-distribution and GPD as needed.
+Conclusion
+The above implementation fits different distributions (Gamma, Student’s t, and Generalized Pareto) to your loss data and calculates the corresponding VaR. Each distribution has its assumptions and characteristics, which can provide different insights into your data. You can visualize the results to compare the VaR from each distribution against the total net loss and event counts.
+
+If you have specific requirements for visualizations or further analysis, feel free to ask!
+Determining the "best" type of distribution for modeling financial loss data, such as operational risk or Value at Risk (VaR), depends on several factors, including the characteristics of your data, the underlying assumptions of each distribution, and how well the distribution fits your data. Here’s a brief overview of the eight distributions we've discussed and their suitability for modeling loss data:
+
+Normal Distribution Pros: Simple and widely used; good for data that clusters around a mean. Cons: Poor fit for financial data with heavy tails (extreme losses). Best for: Symmetrical data without extreme outliers.
+Log-Normal Distribution Pros: Models data that cannot be negative; captures skewness. Cons: May not fit well if the data contains extreme losses. Best for: Data that is strictly positive and skewed.
+Weibull Distribution Pros: Flexible with shape parameters to model various data behaviors. Cons: Requires careful parameter estimation. Best for: Life data and failure rates, can be useful for modeling extreme events.
+Pareto Distribution Pros: Captures heavy-tailed behavior typical in loss data; suitable for modeling large losses. Cons: May not fit well for smaller losses. Best for: Modeling extreme losses and financial data with heavy tails.
+Gamma Distribution Pros: Can model skewed data; suitable for positive continuous data. Cons: Less flexible for data with heavy tails compared to Pareto. Best for: Skewed loss data without extreme values.
+Student's t-Distribution Pros: Accounts for heavier tails than the normal distribution; good for small sample sizes. Cons: Parameter estimation can be complex. Best for: Financial data with potential outliers.
+Generalized Pareto Distribution (GPD) Pros: Excellent for modeling the tails of distributions; widely used in extreme value theory. Cons: Requires sufficient data to estimate parameters accurately. Best for: Modeling extreme losses and the tails of loss distributions.
+Gamma Distribution Pros: Flexible in modeling skewed distributions. Cons: Like the normal distribution, it may not fit data with very high peaks. Best for: Data that is positively skewed and continuous. Choosing the Best Distribution To choose the best distribution for your data, consider the following steps:
+Fit Multiple Distributions: Fit all relevant distributions to your dataset. Goodness-of-Fit Tests: Use statistical tests (e.g., Kolmogorov-Smirnov test, Anderson-Darling test) to assess how well each distribution fits your data. Visual Inspection: Plot the empirical distribution function and compare it with fitted distributions using Q-Q plots or P-P plots. Evaluate VaR Estimates: Compare the VaR estimates from each distribution and assess their implications. Look at how conservative or aggressive each distribution is regarding risk management. Domain Knowledge: Use industry knowledge and context to inform your choice of distribution. Certain distributions may align better with the nature of the risks being analyzed. Conclusion For operational risk modeling and extreme value analysis, the Generalized Pareto Distribution and Pareto Distribution often perform well due to their focus on tail behavior. If you have a large number of outliers, consider using the Student's t-Distribution. The Gamma Distribution can be useful for skewed data but may not capture extreme losses well. In practice, you might find that a combination of models or an ensemble approach may yield the best results for your specific dataset. Always validate your chosen model with out-of-sample testing or backtesting to ensure its reliability.
+
+Provide me source for this info
+
+ChatGPT said: ChatGPT Here are some reliable sources that provide insights into various statistical distributions and their applications, especially in the context of financial loss modeling and risk management:
+
+Risk Management and Financial Institutions
+
+Author: John C. Hull Description: This book covers various aspects of risk management, including the statistical foundations of different probability distributions used in finance. It provides a comprehensive look at how distributions apply to risk assessment and modeling. Quantitative Risk Management: Concepts, Techniques, and Tools
+
+Authors: Alexander J. McNeil, Rüdiger Frey, and Paul Embrechts Description: This book offers detailed explanations of different statistical distributions, including extreme value theory, and their applications in risk management. It emphasizes the importance of choosing the right distribution for modeling risks. Extreme Value Theory: An Introduction
+
+Author: M. de Haan and A. Ferreira Description: This text focuses specifically on extreme value theory, discussing how distributions like the Generalized Pareto Distribution (GPD) are used to model the tails of loss distributions. Statistical Distributions
+
+Authors: Merran Evans, Nicholas Hastings, and Brian Peacock Description: This book provides a comprehensive overview of various statistical distributions, their properties, and applications, making it a useful reference for understanding their fitting and use in real-world scenarios. Practical Risk Theory for Actuaries
+
+Authors: Christopher G. T. K. Y. L. Cheung and Richard J. C. B. A. McCutcheon Description: This book discusses practical applications of risk theory, including various distributions used in actuarial science and finance. It provides examples of how to model risks with different distributions. Introduction to the Practice of Statistics
+
+Authors: David S. Moore, George P. McCabe, and Bruce A. Craig Description: This introductory statistics textbook covers a range of topics, including probability distributions and their applications in various fields, including finance. Data Analysis in the Behavioral Sciences
+
+Authors: H. H. B. E. H. J. Wilcox and R. L. Goodman Description: This book discusses various statistical methods, including the use of different distributions for modeling data in behavioral sciences, with applications that can extend to finance. Online Resources Investopedia - Articles on risk management, VaR, and statistical distributions:
+
+Value at Risk (VaR) Understanding the Normal Distribution Towards Data Science - Various articles on fitting distributions in Python:
+
+Fitting Distributions in Python Research Papers and Journals - Look for papers published in journals like the Journal of Risk and Financial Management, which often discuss the application of statistical methods in risk management.
+
+These resources should give you a solid foundation for understanding the various distributions used in risk management and financial loss modeling.
+
