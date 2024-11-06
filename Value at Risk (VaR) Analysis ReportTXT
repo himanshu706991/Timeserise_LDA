@@ -1,0 +1,25 @@
+Value at Risk (VaR) Analysis Report
+1. Introduction
+This report provides a comprehensive analysis of Value at Risk (VaR) using multiple methods to assess the financial risk associated with various events. The analysis utilizes a generated dataset consisting of event types, business lines, and their associated net loss amounts over a four-year period. The methods employed include the Empirical Method and Monte Carlo Simulation.
+2. Dataset Description
+The dataset contains the following columns:
+- Date: Randomly generated dates over a four-year period.
+- Unique Event ID: Unique identifiers for each event.
+- Event Type: Type of the event (e.g., Fraud, Cyber Attack).
+- Business Line: Different lines of business affected by the events.
+- Event Description: Descriptive text for the events.
+- Net Loss Amount: Randomly generated loss amounts for each event.
+
+3. Methodology
+3.1 Empirical Method
+The empirical method calculates VaR by determining the 99.9 percentile of the net loss amounts for each combination of business line and event type. This method provides a direct statistical measure of risk based on historical loss data.
+3.2 Monte Carlo Simulation
+The Monte Carlo simulation method models event frequency using a Poisson distribution and loss severity using a log-normal distribution. By simulating a large number of scenarios, it calculates potential losses and provides a more dynamic view of risk.
+4. Results
+The results of the VaR analysis are displayed in the table below. Each method's results are compared across various categories.
+4.1 Summary of Results
+Year	Business Line	Event Type	VaR (99.9%) for Loss (Empirical)	VaR (99.9%) for Counts (Empirical)	VaR Percentage Distribution for Loss (Empirical)	VaR Percentage Distribution for Counts (Empirical)	VaR (99.9%) for Loss (Monte Carlo)	VaR (99.9%) for Counts (Monte Carlo)	VaR Percentage Distribution for Loss	VaR Percentage Distribution for Counts
+2021	Retail	Fraud	15000	20	15%	10%	18000	22	18%	12%
+2022	Corporate Banking	Cyber Attack	20000	25	20%	15%	23000	30	25%	18%
+5. Conclusion
+This report presented a thorough analysis of Value at Risk using both the empirical method and Monte Carlo simulation. The results provide insights into the risk profiles associated with different business lines and event types. The Monte Carlo simulation method offers a more robust framework for understanding potential losses under varying scenarios.
