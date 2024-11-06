@@ -1,0 +1,1793 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import scipy.stats as stats
+
+# Parameters for the simulation
+num_simulations = 10000  # Number of Monte Carlo simulations
+event_lambda = 5  # Average number of events (rate for Poisson distribution)
+mean_severity = 10000  # Mean severity for log-normal distribution
+stddev_severity = 5000  # Standard deviation for log-normal distribution
+
+# Function to perform Monte Carlo simulation
+def monte_carlo_simulation(num_simulations, event_lambda, mean_severity, stddev_severity):
+    total_losses = []
+
+    for _ in range(num_simulations):
+        # Simulate the number of events
+        num_events = np.random.poisson(event_lambda)
+
+        # Simulate the severity amounts using log-normal distribution
+        if num_events > 0:
+            severity = np.random.lognormal(mean=np.log(mean_severity), sigma=stddev_severity, size=num_events)
+            total_loss = np.sum(severity)
+        else:
+            total_loss = 0  # No events means no loss
+
+        total_losses.append(total_loss)
+
+    return total_losses
+
+# Run the Monte Carlo simulation
+simulated_losses = monte_carlo_simulation(num_simulations, event_lambda, mean_severity, stddev_severity)
+
+# Calculate VaR at 99.9% confidence level
+var_99_9 = np.percentile(simulated_losses, 99.9)
+
+# Prepare results in a DataFrame
+results = pd.DataFrame({
+    'Simulation Number': np.arange(1, num_simulations + 1),
+    'Total Loss Amount': simulated_losses
+})
+
+# Display the results
+print(f"Value at Risk (99.9%): {var_99_9}")
+print(results)
+
+# Optionally, save results to a CSV
+results.to_csv('monte_carlo_simulation_results.csv', index=False)
+Value at Risk (99.9%): nan
+      Simulation Number  Total Loss Amount
+0                     1                inf
+1                     2                inf
+2                     3                inf
+3                     4                inf
+4                     5                inf
+...                 ...                ...
+9995               9996                inf
+9996               9997                inf
+9997               9998                inf
+9998               9999                inf
+9999              10000                inf
+
+[10000 rows x 2 columns]
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\lib\function_base.py:4655: RuntimeWarning: invalid value encountered in subtract
+  diff_b_a = subtract(b, a)
+Explanation of the Code: Parameters:
+
+num_simulations: Number of times to run the Monte Carlo simulation. event_lambda: The average number of events (loss occurrences) modeled by the Poisson distribution. mean_severity: The mean of the log-normal distribution representing the severity of losses. stddev_severity: The standard deviation of the log-normal distribution. Monte Carlo Simulation Function:
+
+The function monte_carlo_simulation simulates the total loss for each iteration. It uses np.random.poisson to determine how many events occur and np.random.lognormal to determine the severity of those events. Calculate VaR:
+
+After running the simulation, it calculates the 99.9% VaR from the simulated total losses using np.percentile. Output:
+
+The total losses from all simulations are saved in a DataFrame for further analysis or storage. Conclusion: This approach uses a Monte Carlo simulation with a Poisson distribution for event counts and a log-normal distribution for loss severity, effectively capturing the dynamics of risk associated with operational losses. Adjust the parameters according to your specific scenario and requirements. If you have further requirements or questions, feel free to ask!
+
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Function to perform Monte Carlo simulation for VaR calculation
+def monte_carlo_simulation(df, num_simulations=10000):
+    total_losses = []
+
+    # Estimate parameters for Poisson distribution (event counts)
+    event_lambda = df.shape[0] / df['Year'].nunique()  # Average number of events per year
+
+    # Estimate parameters for log-normal distribution (severity amounts)
+    mean_severity = abs(df['Net Loss Amount']).mean()  # Mean severity
+    stddev_severity = df['Net Loss Amount'].std()  # Standard deviation of severity
+
+    for _ in range(num_simulations):
+        # Simulate number of events using Poisson distribution
+        num_events = np.random.poisson(event_lambda)
+
+        # Simulate severity amounts using log-normal distribution
+        if num_events > 0:
+            severity = np.random.lognormal(mean=np.log(mean_severity), sigma=stddev_severity, size=num_events)
+            total_loss = np.sum(severity)
+        else:
+            total_loss = 0  # No events means no loss
+
+        total_losses.append(total_loss)
+
+    return total_losses
+
+# Run the Monte Carlo simulation
+simulated_losses = monte_carlo_simulation(df, num_simulations=10000)
+
+# Calculate VaR at 99.9% confidence level
+var_99_9 = np.percentile(simulated_losses, 99.9)
+
+# Prepare results in a DataFrame
+results = pd.DataFrame({
+    'Simulation Number': np.arange(1, len(simulated_losses) + 1),
+    'Total Loss Amount': simulated_losses
+})
+
+# Display the results
+print(f"Value at Risk (99.9%): {var_99_9}")
+print(results)
+
+# Optionally, save results to a CSV
+results.to_csv('monte_carlo_simulation_results.csv', index=False)
+Value at Risk (99.9%): nan
+      Simulation Number  Total Loss Amount
+0                     1                inf
+1                     2                inf
+2                     3                inf
+3                     4                inf
+4                     5                inf
+...                 ...                ...
+9995               9996                inf
+9996               9997                inf
+9997               9998                inf
+9998               9999                inf
+9999              10000                inf
+
+[10000 rows x 2 columns]
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\lib\function_base.py:4655: RuntimeWarning: invalid value encountered in subtract
+  diff_b_a = subtract(b, a)
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Function to perform Monte Carlo simulation for VaR calculation
+def monte_carlo_simulation(df, num_simulations=10000):
+    total_losses = []
+    event_counts = []
+
+    # Estimate parameters for Poisson distribution (event counts)
+    event_lambda = df.shape[0] / df['Year'].nunique()  # Average number of events per year
+
+    # Estimate parameters for log-normal distribution (severity amounts)
+    mean_severity = abs(df['Net Loss Amount']).mean()  # Mean severity
+    stddev_severity = df['Net Loss Amount'].std()  # Standard deviation of severity
+
+    for _ in range(num_simulations):
+        # Simulate number of events using Poisson distribution
+        num_events = np.random.poisson(event_lambda)
+
+        # Simulate severity amounts using log-normal distribution
+        if num_events > 0:
+            severity = np.random.lognormal(mean=np.log(mean_severity), sigma=stddev_severity, size=num_events)
+            total_loss = np.sum(severity)
+        else:
+            total_loss = 0  # No events means no loss
+        
+        total_losses.append(total_loss)
+        event_counts.append(num_events)
+
+    return total_losses, event_counts
+
+# Run the Monte Carlo simulation
+simulated_losses, simulated_counts = monte_carlo_simulation(df, num_simulations=10000)
+
+# Calculate VaR at 99.9% confidence level
+var_99_9_loss = np.percentile(simulated_losses, 99.9)
+var_99_9_counts = np.percentile(simulated_counts, 99.9)
+
+# Total VaR for Losses and Counts
+total_var_loss = np.sum(simulated_losses)
+total_var_counts = np.sum(simulated_counts)
+
+# Calculate percentage distributions
+var_loss_percentage_distribution = (var_99_9_loss / total_var_loss) * 100 if total_var_loss != 0 else 0
+var_counts_percentage_distribution = (var_99_9_counts / total_var_counts) * 100 if total_var_counts != 0 else 0
+
+# Prepare results in a DataFrame
+results = pd.DataFrame({
+    'Simulation Number': np.arange(1, len(simulated_losses) + 1),
+    'Total Loss Amount': simulated_losses,
+    'Event Counts': simulated_counts
+})
+
+# Display results
+print(f"Value at Risk (99.9%) for Loss: {var_99_9_loss}")
+print(f"Value at Risk (99.9%) for Counts: {var_99_9_counts}")
+print(f"VaR Percentage Distribution for Loss: {var_loss_percentage_distribution}%")
+print(f"VaR Percentage Distribution for Counts: {var_counts_percentage_distribution}%")
+
+# Optionally, save results to a CSV
+results.to_csv('monte_carlo_simulation_results.csv', index=False)
+Value at Risk (99.9%) for Loss: nan
+Value at Risk (99.9%) for Counts: 2143.0
+VaR Percentage Distribution for Loss: nan%
+VaR Percentage Distribution for Counts: 0.010713442801088862%
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\lib\function_base.py:4655: RuntimeWarning: invalid value encountered in subtract
+  diff_b_a = subtract(b, a)
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Function to perform Monte Carlo simulation for VaR calculation
+def monte_carlo_simulation(df, num_simulations=10000):
+    total_losses = []
+    event_counts = []
+
+    # Estimate parameters for Poisson distribution (event counts)
+    event_lambda = df.shape[0] / df['Year'].nunique()  # Average number of events per year
+
+    # Estimate parameters for log-normal distribution (severity amounts)
+    mean_severity = abs(df['Net Loss Amount']).mean()  # Mean severity
+    stddev_severity = df['Net Loss Amount'].std()  # Standard deviation of severity
+
+    for _ in range(num_simulations):
+        # Simulate number of events using Poisson distribution
+        num_events = np.random.poisson(event_lambda)
+
+        # Simulate severity amounts using log-normal distribution
+        if num_events > 0:
+            severity = np.random.lognormal(mean=np.log(mean_severity), sigma=stddev_severity, size=num_events)
+            total_loss = np.sum(severity)
+        else:
+            total_loss = 0  # No events means no loss
+        
+        total_losses.append(total_loss)
+        event_counts.append(num_events)
+
+    return total_losses, event_counts
+
+# Group by Year, Business Line, and Event Type for simulation
+results = []
+
+for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+    simulated_losses, simulated_counts = monte_carlo_simulation(group, num_simulations=10000)
+    
+    # Calculate VaR at 99.9% confidence level
+    var_99_9_loss = np.percentile(simulated_losses, 99.9)
+    var_99_9_counts = np.percentile(simulated_counts, 99.9)
+
+    # Total VaR for Losses and Counts
+    total_var_loss = np.sum(simulated_losses)
+    total_var_counts = np.sum(simulated_counts)
+
+    # Calculate percentage distributions
+    var_loss_percentage_distribution = (var_99_9_loss / total_var_loss) * 100 if total_var_loss != 0 else 0
+    var_counts_percentage_distribution = (var_99_9_counts / total_var_counts) * 100 if total_var_counts != 0 else 0
+
+    # Append results to the results list
+    results.append({
+        'Year': year,
+        'Business Line': business_line,
+        'Event Type': event_type,
+        'VaR (99.9%) for Loss': var_99_9_loss,
+        'VaR (99.9%) for Counts': var_99_9_counts,
+        'VaR Percentage Distribution for Loss': var_loss_percentage_distribution,
+        'VaR Percentage Distribution for Counts': var_counts_percentage_distribution
+    })
+
+# Convert results to DataFrame
+final_results_df = pd.DataFrame(results)
+
+# Display results
+print(final_results_df)
+
+# Optionally, save results to a CSV
+final_results_df.to_csv('monte_carlo_var_results_by_category.csv', index=False)
+C:\Users\Himanshu Singh\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\lib\function_base.py:4655: RuntimeWarning: invalid value encountered in subtract
+  diff_b_a = subtract(b, a)
+     Year      Business Line            Event Type  VaR (99.9%) for Loss  \
+0    2020   Asset Management            Compliance                   NaN   
+1    2020   Asset Management          Cyber Attack                   NaN   
+2    2020   Asset Management                 Fraud                   NaN   
+3    2020   Asset Management           Market Risk                   NaN   
+4    2020   Asset Management      Natural Disaster                   NaN   
+..    ...                ...                   ...                   ...   
+494  2024  Wealth Management     Operational Error                   NaN   
+495  2024  Wealth Management  Regulatory Violation                   NaN   
+496  2024  Wealth Management        System Failure                   NaN   
+497  2024  Wealth Management                 Theft                   NaN   
+498  2024  Wealth Management           Vendor Risk                   NaN   
+
+     VaR (99.9%) for Counts  VaR Percentage Distribution for Loss  \
+0                     8.000                                   NaN   
+1                    10.000                                   NaN   
+2                    11.000                                   NaN   
+3                     9.001                                   NaN   
+4                     9.000                                   NaN   
+..                      ...                                   ...   
+494                  46.000                                   NaN   
+495                  43.001                                   NaN   
+496                  43.000                                   NaN   
+497                  28.000                                   NaN   
+498                  30.000                                   NaN   
+
+     VaR Percentage Distribution for Counts  
+0                                  0.039944  
+1                                  0.032858  
+2                                  0.027310  
+3                                  0.029959  
+4                                  0.029858  
+..                                      ...  
+494                                0.016457  
+495                                0.016553  
+496                                0.016525  
+497                                0.018658  
+498                                0.018729  
+
+[499 rows x 7 columns]
+final_results_df
+Year	Business Line	Event Type	VaR (99.9%) for Loss	VaR (99.9%) for Counts	VaR Percentage Distribution for Loss	VaR Percentage Distribution for Counts
+0	2020	Asset Management	Compliance	NaN	8.000	NaN	0.039944
+1	2020	Asset Management	Cyber Attack	NaN	10.000	NaN	0.032858
+2	2020	Asset Management	Fraud	NaN	11.000	NaN	0.027310
+3	2020	Asset Management	Market Risk	NaN	9.001	NaN	0.029959
+4	2020	Asset Management	Natural Disaster	NaN	9.000	NaN	0.029858
+...	...	...	...	...	...	...	...
+494	2024	Wealth Management	Operational Error	NaN	46.000	NaN	0.016457
+495	2024	Wealth Management	Regulatory Violation	NaN	43.001	NaN	0.016553
+496	2024	Wealth Management	System Failure	NaN	43.000	NaN	0.016525
+497	2024	Wealth Management	Theft	NaN	28.000	NaN	0.018658
+498	2024	Wealth Management	Vendor Risk	NaN	30.000	NaN	0.018729
+499 rows × 7 columns
+
+Given your dataset, the Monte Carlo simulation approach would likely be the most comprehensive and effective for calculating VaR, as it allows you to model both the frequency of events (using a Poisson distribution) and the severity of losses (using a log-normal distribution). can we use other distribution
+
+ChatGPT said: ChatGPT Yes, while the Monte Carlo simulation approach typically employs a Poisson distribution for modeling event frequency and a log-normal distribution for loss severity, other distributions can also be used depending on the characteristics of your data and the specific requirements of your analysis. Here are some alternative distributions you can consider for both frequency and severity modeling in the context of calculating Value at Risk (VaR):
+
+Alternative Distributions for Event Frequency Negative Binomial Distribution:
+Useful if you expect over-dispersion in the count of events (where the variance exceeds the mean). Can model situations with more variability than a Poisson distribution can accommodate. Geometric Distribution:
+
+Can be used for modeling the number of trials until the first success, particularly when events occur sequentially. 2. Alternative Distributions for Loss Severity Exponential Distribution:
+
+Suitable for modeling time until an event occurs, often used in reliability analysis; it can also model loss severity in certain contexts, particularly for non-negative losses. Gamma Distribution:
+
+Flexible and can model right-skewed data; it can be particularly useful for modeling positive loss amounts. Weibull Distribution:
+
+Can model various shapes of data distributions and is often used in survival analysis; it can handle skewed loss data. Log-Logistic Distribution:
+
+Useful for modeling variables that are positive and skewed. It is often used in financial risk modeling due to its flexibility. 3. Combining Distributions In a Monte Carlo simulation framework, you can also combine different distributions for event frequency and loss severity. For example:
+
+Use a Negative Binomial distribution for event counts if you expect higher variability. Pair it with a Gamma distribution or Weibull distribution for severity, especially if your data exhibits characteristics that are not well-captured by the log-normal distribution. Implementation When using alternative distributions, the steps in the Monte Carlo simulation remain largely the same:
+
+Model Event Frequency: Sample the number of events using the chosen distribution. Model Loss Severity: For each sampled event, generate a severity amount from the selected distribution. Calculate Total Loss: Aggregate the losses from the simulated events. Repeat: Perform many iterations to create a distribution of potential total losses. Calculate VaR: Determine the VaR from the simulated loss distribution at your desired confidence level. Conclusion The choice of distribution should be guided by the characteristics of your data. Before implementing a specific distribution, it’s advisable to perform exploratory data analysis (EDA) to understand the distribution of your event counts and loss amounts. This can include visualizations (like histograms or Q-Q plots) and statistical tests to assess fit (like the Kolmogorov-Smirnov test). By selecting the most appropriate distributions based on your data, you can enhance the accuracy and reliability of your VaR estimates.
+
+ 
+ 
+# The choice of distribution should be guided by the characteristics of your data. Before implementing a specific distribution, it’s advisable to perform exploratory data analysis (EDA) to understand the distribution of your event counts and loss amounts. This can include visualizations (like histograms or Q-Q plots) and statistical tests to assess fit (like the Kolmogorov-Smirnov test). By selecting the most appropriate distributions based on your data, you can enhance the accuracy and reliability of your VaR estimates.
+
+
+
+
+
+
+# You said:
+# use those and build code
+# ChatGPT said:
+# ChatGPT
+# To implement a Monte Carlo simulation approach using alternative distributions for modeling event frequency and loss severity, let's consider using the Negative Binomial distribution for event counts and the Gamma distribution for loss severity. Below is a complete code example based on your dataset that demonstrates how to perform this simulation and calculate the Value at Risk (VaR).
+
+# Code Implementation
+# python
+# Copy code
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+num_simulations = 10000  # Number of Monte Carlo simulations
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Monte Carlo Simulation to calculate VaR
+def monte_carlo_var(df, num_simulations, confidence_level):
+    # Initialize an empty list to store total losses for each simulation
+    total_losses = []
+
+    for _ in range(num_simulations):
+        # Sample the number of events using a Negative Binomial distribution
+        # Parameters for the Negative Binomial distribution can be adjusted
+        num_events = np.random.negative_binomial(5, 0.5)  # Example parameters (n=5, p=0.5)
+
+        # Sample losses using a Gamma distribution
+        # Parameters for the Gamma distribution can be adjusted
+        losses = np.random.gamma(2, 1500, num_events)  # Example parameters (shape=2, scale=1500)
+
+        # Calculate total loss for this simulation
+        total_losses.append(np.sum(losses))
+
+    # Calculate Value at Risk (VaR)
+    var_value = np.percentile(total_losses, confidence_level * 100)
+    return var_value
+
+# Set confidence level for VaR
+confidence_level = 0.999  # 99.9% VaR
+
+# Group by Year, Business Line, and Event Type to calculate VaR
+var_results = []
+for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+    var = monte_carlo_var(group, num_simulations, confidence_level)
+    var_results.append({
+        'Year': year,
+        'Business Line': business_line,
+        'Event Type': event_type,
+        'VaR (99.9%)': var
+    })
+
+# Create a DataFrame for the results
+var_results_df = pd.DataFrame(var_results)
+
+# Display the VaR results
+print(var_results_df)
+
+# Optionally, save results to a CSV
+var_results_df.to_csv('monte_carlo_var_results.csv', index=False)
+# Explanation
+# Data Generation: The code generates a synthetic dataset containing various business lines and event types, along with net loss amounts.
+
+# Monte Carlo Simulation:
+
+# A Negative Binomial distribution is used to simulate the number of events in each simulation.
+# A Gamma distribution is used to model the severity of losses per event.
+# Total losses for each simulation are calculated, and then the VaR at the specified confidence level (99.9%) is derived from the simulated total losses.
+# Grouping: The results are grouped by year, business line, and event type to provide a comprehensive overview of the VaR across these dimensions.
+
+# Output: The final results are printed and can also be saved to a CSV file for further analysis.
+
+# Adjusting Parameters
+# Feel free to adjust the parameters for the distributions based on your specific needs or insights from your data. The choice of parameters can significantly affect the simulation results, so it's important to select them based on the characteristics of your historical data or domain knowledge.
+     Year      Business Line            Event Type   VaR (99.9%)
+0    2020   Asset Management            Compliance  60581.204427
+1    2020   Asset Management          Cyber Attack  63386.398500
+2    2020   Asset Management                 Fraud  62194.820464
+3    2020   Asset Management           Market Risk  60664.371067
+4    2020   Asset Management      Natural Disaster  60917.146685
+..    ...                ...                   ...           ...
+493  2024  Wealth Management     Operational Error  60111.701665
+494  2024  Wealth Management  Regulatory Violation  62387.452358
+495  2024  Wealth Management        System Failure  64387.351613
+496  2024  Wealth Management                 Theft  61319.523473
+497  2024  Wealth Management           Vendor Risk  60305.491302
+
+[498 rows x 4 columns]
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+num_simulations = 10000  # Number of Monte Carlo simulations
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Monte Carlo Simulation to calculate VaR
+def monte_carlo_var(df, num_simulations, confidence_level):
+    # Initialize lists to store total losses and counts for each simulation
+    total_losses = []
+    total_counts = []
+
+    for _ in range(num_simulations):
+        # Sample the number of events using a Negative Binomial distribution
+        num_events = np.random.negative_binomial(5, 0.5)  # Example parameters (n=5, p=0.5)
+        total_counts.append(num_events)
+
+        # Sample losses using a Gamma distribution
+        losses = np.random.gamma(2, 1500, num_events)  # Example parameters (shape=2, scale=1500)
+
+        # Calculate total loss for this simulation
+        total_losses.append(np.sum(losses))
+
+    # Calculate Value at Risk (VaR) for losses
+    var_value_loss = np.percentile(total_losses, confidence_level * 100)
+
+    # Calculate Value at Risk (VaR) for counts
+    var_value_counts = np.percentile(total_counts, confidence_level * 100)
+
+    return var_value_loss, var_value_counts, np.mean(total_losses), np.mean(total_counts)
+
+# Set confidence level for VaR
+confidence_level = 0.999  # 99.9% VaR
+
+# Group by Year, Business Line, and Event Type to calculate VaR
+var_results = []
+for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+    var_loss, var_counts, avg_loss, avg_counts = monte_carlo_var(group, num_simulations, confidence_level)
+    var_results.append({
+        'Year': year,
+        'Business Line': business_line,
+        'Event Type': event_type,
+        'VaR (99.9%) for Loss': var_loss,
+        'VaR (99.9%) for Counts': var_counts,
+        'Average Loss per Event': avg_loss,
+        'Average Event Count': avg_counts
+    })
+
+# Create a DataFrame for the results
+var_results_df = pd.DataFrame(var_results)
+
+# Display the VaR results
+print(var_results_df)
+
+# Optionally, save results to a CSV
+var_results_df.to_csv('monte_carlo_var_results_extended.csv', index=False)
+     Year      Business Line            Event Type  VaR (99.9%) for Loss  \
+0    2020   Asset Management            Compliance          59385.015089   
+1    2020   Asset Management          Cyber Attack          60934.292744   
+2    2020   Asset Management           Market Risk          60107.145957   
+3    2020   Asset Management      Natural Disaster          61423.305848   
+4    2020   Asset Management     Operational Error          61758.998356   
+..    ...                ...                   ...                   ...   
+490  2024  Wealth Management     Operational Error          62160.661861   
+491  2024  Wealth Management  Regulatory Violation          63410.229956   
+492  2024  Wealth Management        System Failure          63809.967747   
+493  2024  Wealth Management                 Theft          61491.693265   
+494  2024  Wealth Management           Vendor Risk          66251.894892   
+
+     VaR (99.9%) for Counts  Average Loss per Event  Average Event Count  
+0                    19.000            14794.815448               4.9438  
+1                    18.000            15044.352481               5.0181  
+2                    18.000            14979.490131               4.9762  
+3                    18.000            14839.476812               4.9426  
+4                    19.000            15044.165774               5.0068  
+..                      ...                     ...                  ...  
+490                  19.000            14944.414035               4.9939  
+491                  18.001            14877.332037               4.9597  
+492                  19.000            15092.846308               5.0172  
+493                  19.000            15132.766818               5.0553  
+494                  20.000            15001.034484               5.0228  
+
+[495 rows x 7 columns]
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+num_simulations = 10000  # Number of Monte Carlo simulations
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Monte Carlo Simulation to calculate VaR
+def monte_carlo_var(df, num_simulations, confidence_level):
+    total_losses = []
+    total_counts = []
+
+    for _ in range(num_simulations):
+        # Sample the number of events using a Negative Binomial distribution
+        num_events = np.random.negative_binomial(5, 0.5)  # Example parameters (n=5, p=0.5)
+        total_counts.append(num_events)
+
+        # Sample losses using a Gamma distribution
+        losses = np.random.gamma(2, 1500, num_events)  # Example parameters (shape=2, scale=1500)
+
+        total_losses.append(np.sum(losses))
+
+    var_value_loss = np.percentile(total_losses, confidence_level * 100)
+    var_value_counts = np.percentile(total_counts, confidence_level * 100)
+
+    return var_value_loss, var_value_counts
+
+# Set confidence level for VaR
+confidence_level = 0.999  # 99.9% VaR
+
+# Group by Year, Business Line, and Event Type to calculate VaR
+var_results = []
+for (year, business_line, event_type), group in df.groupby(['Year', 'Business Line', 'Event Type']):
+    var_loss, var_counts = monte_carlo_var(group, num_simulations, confidence_level)
+    var_results.append({
+        'Year': year,
+        'Business Line': business_line,
+        'Event Type': event_type,
+        'VaR (99.9%) for Loss': var_loss,
+        'VaR (99.9%) for Counts': var_counts
+    })
+
+# Create a DataFrame for the results
+var_results_df = pd.DataFrame(var_results)
+
+# Calculate total VaR for losses and counts for percentage distribution calculation
+total_var_loss = var_results_df['VaR (99.9%) for Loss'].sum()
+total_var_counts = var_results_df['VaR (99.9%) for Counts'].sum()
+
+# Calculate percentage distribution
+var_results_df['VaR Percentage Distribution for Loss'] = (
+    var_results_df['VaR (99.9%) for Loss'] / total_var_loss * 100
+)
+
+var_results_df['VaR Percentage Distribution for Counts'] = (
+    var_results_df['VaR (99.9%) for Counts'] / total_var_counts * 100
+)
+
+# Display the results
+print(var_results_df)
+
+# Optionally, save results to a CSV
+var_results_df.to_csv('monte_carlo_var_results_with_percentages.csv', index=False)
+     Year      Business Line            Event Type  VaR (99.9%) for Loss  \
+0    2020   Asset Management            Compliance          61512.250890   
+1    2020   Asset Management          Cyber Attack          62120.863831   
+2    2020   Asset Management                 Fraud          61223.165256   
+3    2020   Asset Management      Natural Disaster          63854.210776   
+4    2020   Asset Management     Operational Error          58860.710745   
+..    ...                ...                   ...                   ...   
+493  2024  Wealth Management     Operational Error          63649.046603   
+494  2024  Wealth Management  Regulatory Violation          64262.196192   
+495  2024  Wealth Management        System Failure          59489.087605   
+496  2024  Wealth Management                 Theft          62564.447282   
+497  2024  Wealth Management           Vendor Risk          62179.953159   
+
+     VaR (99.9%) for Counts  VaR Percentage Distribution for Loss  \
+0                    19.000                              0.195911   
+1                    19.000                              0.197850   
+2                    19.000                              0.194990   
+3                    19.000                              0.203370   
+4                    18.000                              0.187466   
+..                      ...                                   ...   
+493                  18.000                              0.202717   
+494                  19.000                              0.204669   
+495                  18.001                              0.189468   
+496                  20.000                              0.199262   
+497                  19.000                              0.198038   
+
+     VaR Percentage Distribution for Counts  
+0                                  0.201997  
+1                                  0.201997  
+2                                  0.201997  
+3                                  0.201997  
+4                                  0.191365  
+..                                      ...  
+493                                0.191365  
+494                                0.201997  
+495                                0.191376  
+496                                0.212628  
+497                                0.201997  
+
+[498 rows x 7 columns]
+var_results_df
+Year	Business Line	Event Type	VaR (99.9%) for Loss	VaR (99.9%) for Counts	VaR Percentage Distribution for Loss	VaR Percentage Distribution for Counts
+0	2020	Asset Management	Compliance	61512.250890	19.000	0.195911	0.201997
+1	2020	Asset Management	Cyber Attack	62120.863831	19.000	0.197850	0.201997
+2	2020	Asset Management	Fraud	61223.165256	19.000	0.194990	0.201997
+3	2020	Asset Management	Natural Disaster	63854.210776	19.000	0.203370	0.201997
+4	2020	Asset Management	Operational Error	58860.710745	18.000	0.187466	0.191365
+...	...	...	...	...	...	...	...
+493	2024	Wealth Management	Operational Error	63649.046603	18.000	0.202717	0.191365
+494	2024	Wealth Management	Regulatory Violation	64262.196192	19.000	0.204669	0.201997
+495	2024	Wealth Management	System Failure	59489.087605	18.001	0.189468	0.191376
+496	2024	Wealth Management	Theft	62564.447282	20.000	0.199262	0.212628
+497	2024	Wealth Management	Vendor Risk	62179.953159	19.000	0.198038	0.201997
+498 rows × 7 columns
+
+Monte Carlo simulation is considered a strong method for estimating Value at Risk (VaR) and is widely used in finance and risk management for several reasons:
+
+Advantages of Monte Carlo Simulation Flexibility: It can accommodate a wide range of distributions for both the frequency of events (e.g., using Poisson or Negative Binomial distributions) and the severity of losses (e.g., using log-normal or Gamma distributions). This flexibility allows it to model complex scenarios more realistically than simpler methods.
+
+Realism in Assumptions: Monte Carlo simulations can incorporate different types of risks and correlations between various risk factors, leading to more accurate risk assessments. You can model different scenarios (both normal and extreme events) which can provide insights into tail risks.
+
+Robustness: By running thousands (or millions) of simulations, the results are generally robust, especially when aggregated. This can help smooth out anomalies or outlier results that might skew simpler methods.
+
+Detailed Insights: It provides a complete distribution of potential outcomes, not just a point estimate of VaR. This allows for the analysis of potential losses at various confidence levels, providing more comprehensive risk insights.
+
+Visual Representation: Results from Monte Carlo simulations can be visualized in various ways (histograms, cumulative distribution functions), making it easier to communicate risks to stakeholders.
+
+Limitations of Monte Carlo Simulation Computational Intensity: It can be computationally expensive and time-consuming, especially with a high number of simulations and complex models. This may require significant processing power, especially in large organizations or when dealing with big datasets.
+
+Model Risk: The accuracy of the results heavily depends on the assumptions made about the underlying distributions and the correlations between variables. Poorly specified models can lead to misleading results.
+
+Data Requirements: For effective implementation, it often requires high-quality historical data to estimate parameters accurately, which can be a challenge in practice.
+
+Interpretation of Results: The outputs can be complex and may require expert interpretation to derive meaningful insights.
+
+Alternatives to Monte Carlo Simulation Historical Simulation: This approach uses actual historical data to estimate potential future losses, providing a simple and intuitive way to compute VaR but is limited by the historical period considered.
+
+Parametric Methods: These rely on statistical parameters (mean and standard deviation) to calculate VaR assuming normal distribution. This method is quick but may not adequately capture the tail risks associated with financial data.
+
+Bootstrapping: This method involves resampling from the historical data to create simulated datasets. It can capture the empirical distribution of returns but may still miss outlier events not captured in the historical period.
+
+Stress Testing and Scenario Analysis: These techniques involve assessing the impact of extreme but plausible adverse conditions on portfolios, which can complement Monte Carlo methods.
+
+Conclusion In summary, Monte Carlo simulation is a powerful tool for calculating VaR, especially when dealing with complex risk scenarios involving multiple variables. However, it should be used alongside other methods to provide a comprehensive risk management framework. Depending on the specific requirements of your organization and the complexity of your risk environment, combining Monte Carlo with other approaches can lead to better decision-making and risk assessment.
+
+ 
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# 1. Monte Carlo Simulation for VaR
+def monte_carlo_var(data, confidence_level=0.999, simulations=10000):
+    # Generate random event counts using Poisson distribution
+    event_counts = np.random.poisson(data['Event Type'].count() / len(data) * simulations)
+    # Generate random loss amounts using log-normal distribution
+    loss_amounts = np.random.lognormal(mean=np.mean(data['Net Loss Amount']), 
+                                        sigma=np.std(data['Net Loss Amount']), 
+                                        size=simulations)
+    # Calculate total loss for each simulation
+    total_losses = event_counts * loss_amounts
+    # Calculate VaR
+    var = np.percentile(total_losses, (1 - confidence_level) * 100)
+    return var
+
+# 2. Historical Simulation for VaR
+def historical_var(data, confidence_level=0.999):
+    # Calculate empirical losses and return the VaR
+    losses = data['Net Loss Amount']
+    var = np.percentile(losses, (1 - confidence_level) * 100)
+    return var
+
+# 3. Parametric VaR assuming normal distribution
+def parametric_var(data, confidence_level=0.999):
+    mean = np.mean(data['Net Loss Amount'])
+    std_dev = np.std(data['Net Loss Amount'])
+    # Calculate VaR using normal distribution
+    var = mean + std_dev * stats.norm.ppf(1 - confidence_level)
+    return var
+
+# Calculate VaR for each method
+confidence_level = 0.999
+monte_carlo_var_result = monte_carlo_var(df, confidence_level)
+historical_var_result = historical_var(df, confidence_level)
+parametric_var_result = parametric_var(df, confidence_level)
+
+# Print the results
+print("Value at Risk Results:")
+print(f"Monte Carlo VaR (99.9%): {monte_carlo_var_result}")
+print(f"Historical Simulation VaR (99.9%): {historical_var_result}")
+print(f"Parametric VaR (99.9%): {parametric_var_result}")
+
+# Group the results for better comparison
+results = {
+    'Method': ['Monte Carlo', 'Historical Simulation', 'Parametric'],
+    'VaR (99.9%)': [monte_carlo_var_result, historical_var_result, parametric_var_result]
+}
+
+results_df = pd.DataFrame(results)
+print("\nComparison of VaR Results:")
+print(results_df)
+Value at Risk Results:
+Monte Carlo VaR (99.9%): 0.0
+Historical Simulation VaR (99.9%): -9961.154187904061
+Parametric VaR (99.9%): -17720.222346627463
+
+Comparison of VaR Results:
+                  Method   VaR (99.9%)
+0            Monte Carlo      0.000000
+1  Historical Simulation  -9961.154188
+2             Parametric -17720.222347
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_32220\1983422247.py:64: RuntimeWarning: overflow encountered in multiply
+  total_losses = event_counts * loss_amounts
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from scipy import stats
+
+# Function to generate random dates
+def random_dates(start, end, n=10):
+    return [start + timedelta(days=np.random.randint(0, (end - start).days)) for _ in range(n)]
+
+# Parameters
+num_records = 10000
+start_date = datetime.now() - timedelta(days=4*365)
+end_date = datetime.now()
+
+# Expanded categories
+business_lines = [
+    "Retail", "Corporate Banking", "Investment Banking", "Insurance",
+    "Wealth Management", "Asset Management", "Private Banking",
+    "Credit Card Services", "Mortgage Lending", "Financial Advisory"
+]
+
+event_types = [
+    "Fraud", "System Failure", "Theft", "Compliance", "Natural Disaster",
+    "Cyber Attack", "Market Risk", "Operational Error", "Vendor Risk", "Regulatory Violation"
+]
+
+# Generate data
+data = {
+    "Date": random_dates(start_date, end_date, num_records),
+    "Unique Event ID": [f"EID{str(i).zfill(5)}" for i in range(num_records)],
+    "Event Type": np.random.choice(event_types, num_records),
+    "Business Line": np.random.choice(business_lines, num_records),
+    "Event Description": np.random.choice(
+        [
+            "Unauthorized transaction", "Server downtime", "Lost assets", 
+            "Regulatory fines", "Data breach", "Network failure", 
+            "Inadequate compliance", "Financial misstatement", 
+            "Supplier issues", "Internal fraud"
+        ],
+        num_records
+    ),
+    "Net Loss Amount": np.random.choice(
+        [np.random.uniform(-10000, 0) for _ in range(num_records // 2)] + 
+        [np.random.uniform(0, 10000) for _ in range(num_records // 2)],
+        num_records
+    )
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Add a Year column
+df['Year'] = df['Date'].dt.year
+
+# Function to calculate VaR and percentage distributions
+def calculate_var_and_distribution(group):
+    # Calculate VaR for Loss (empirical method)
+    var_loss = np.percentile(group['Net Loss Amount'], 0.1)  # 99.9% VaR
+    var_counts = group['Unique Event ID'].count()  # Total events in the group
+    
+    # Calculate percentage distributions
+    total_var_loss = df['Net Loss Amount'].quantile(0.1)
+    total_event_counts = df['Unique Event ID'].count()
+    
+    percentage_distribution_loss = (var_loss / total_var_loss) * 100 if total_var_loss != 0 else 0
+    percentage_distribution_counts = (var_counts / total_event_counts) * 100 if total_event_counts != 0 else 0
+    
+    return pd.Series({
+        'VaR (99.9%) for Loss (Empirical)': var_loss,
+        'VaR (99.9%) for Counts (Empirical)': var_counts,
+        'VaR Percentage Distribution for Loss (Empirical)': percentage_distribution_loss,
+        'VaR Percentage Distribution for Counts (Empirical)': percentage_distribution_counts
+    })
+
+# Monte Carlo Simulation Method
+def monte_carlo_simulation(group, num_simulations=10000):
+    # Event counts follow a Poisson distribution
+    event_count_mean = group['Unique Event ID'].count()
+    simulated_counts = np.random.poisson(event_count_mean, num_simulations)
+    
+    # Severity amounts follow a log-normal distribution
+    log_severity = np.log(-group['Net Loss Amount'][group['Net Loss Amount'] < 0].dropna())  # only negative losses
+    simulated_losses = np.random.lognormal(mean=log_severity.mean(), sigma=log_severity.std(), size=num_simulations)
+    
+    total_losses = simulated_counts * simulated_losses
+    
+    # Calculate VaR for losses and counts
+    var_loss_mc = np.percentile(total_losses, 99.9)
+    var_counts_mc = np.percentile(simulated_counts, 99.9)
+    
+    return pd.Series({
+        'VaR (99.9%) for Loss (Monte Carlo)': var_loss_mc,
+        'VaR (99.9%) for Counts (Monte Carlo)': var_counts_mc
+    })
+
+# Group by Year, Business Line, and Event Type
+empirical_results = df.groupby(['Year', 'Business Line', 'Event Type']).apply(calculate_var_and_distribution).reset_index()
+monte_carlo_results = df.groupby(['Year', 'Business Line', 'Event Type']).apply(monte_carlo_simulation).reset_index()
+
+# Merge the results
+final_results = pd.merge(empirical_results, monte_carlo_results, on=['Year', 'Business Line', 'Event Type'])
+
+# Calculate total VaR and percentage distributions for the combined results
+final_results['Total VaR Loss'] = final_results[['VaR (99.9%) for Loss (Empirical)', 'VaR (99.9%) for Loss (Monte Carlo)']].max(axis=1)
+final_results['Total VaR Counts'] = final_results[['VaR (99.9%) for Counts (Empirical)', 'VaR (99.9%) for Counts (Monte Carlo)']].max(axis=1)
+
+# Calculate percentage distributions
+total_var_loss = final_results['Total VaR Loss'].sum()
+total_var_counts = final_results['Total VaR Counts'].sum()
+
+final_results['VaR Percentage Distribution for Loss'] = (final_results['Total VaR Loss'] / total_var_loss) * 100
+final_results['VaR Percentage Distribution for Counts'] = (final_results['Total VaR Counts'] / total_var_counts) * 100
+
+# Final result columns
+final_results = final_results[['Year', 'Business Line', 'Event Type',
+                               'VaR (99.9%) for Loss (Empirical)', 
+                               'VaR (99.9%) for Counts (Empirical)',
+                               'VaR Percentage Distribution for Loss (Empirical)',
+                               'VaR Percentage Distribution for Counts (Empirical)',
+                               'VaR (99.9%) for Loss (Monte Carlo)', 
+                               'VaR (99.9%) for Counts (Monte Carlo)',
+                               'VaR Percentage Distribution for Loss', 
+                               'VaR Percentage Distribution for Counts']]
+
+# Display the final results
+print(final_results)
+
+# Optionally, save results to a CSV
+final_results.to_csv('var_results_all_methods.csv', index=False)
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_32220\1914804469.py:97: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  empirical_results = df.groupby(['Year', 'Business Line', 'Event Type']).apply(calculate_var_and_distribution).reset_index()
+     Year      Business Line            Event Type  \
+0    2020   Asset Management            Compliance   
+1    2020   Asset Management          Cyber Attack   
+2    2020   Asset Management                 Fraud   
+3    2020   Asset Management           Market Risk   
+4    2020   Asset Management      Natural Disaster   
+..    ...                ...                   ...   
+493  2024  Wealth Management     Operational Error   
+494  2024  Wealth Management  Regulatory Violation   
+495  2024  Wealth Management        System Failure   
+496  2024  Wealth Management                 Theft   
+497  2024  Wealth Management           Vendor Risk   
+
+     VaR (99.9%) for Loss (Empirical)  VaR (99.9%) for Counts (Empirical)  \
+0                        -9798.360137                                 5.0   
+1                        -8026.426078                                 3.0   
+2                        -7867.590607                                 3.0   
+3                         3396.062963                                 2.0   
+4                        -9227.423250                                 5.0   
+..                                ...                                 ...   
+493                      -9038.913654                                16.0   
+494                      -7509.705183                                14.0   
+495                      -9392.539346                                18.0   
+496                      -9581.858814                                22.0   
+497                      -7686.684908                                19.0   
+
+     VaR Percentage Distribution for Loss (Empirical)  \
+0                                          123.205717   
+1                                          100.925213   
+2                                           98.927997   
+3                                          -42.702490   
+4                                          116.026690   
+..                                                ...   
+493                                        113.656349   
+494                                         94.427904   
+495                                        118.102879   
+496                                        120.483404   
+497                                         96.653268   
+
+     VaR Percentage Distribution for Counts (Empirical)  \
+0                                                 0.05    
+1                                                 0.03    
+2                                                 0.03    
+3                                                 0.02    
+4                                                 0.05    
+..                                                 ...    
+493                                               0.16    
+494                                               0.14    
+495                                               0.18    
+496                                               0.22    
+497                                               0.19    
+
+     VaR (99.9%) for Loss (Monte Carlo)  VaR (99.9%) for Counts (Monte Carlo)  \
+0                          1.229915e+05                                13.000   
+1                          1.287586e+05                                10.000   
+2                          1.855577e+05                                10.000   
+3                                   NaN                                 8.000   
+4                          1.177447e+05                                13.000   
+..                                  ...                                   ...   
+493                        5.325144e+06                                29.000   
+494                        2.901080e+05                                27.000   
+495                        8.314983e+05                                33.000   
+496                        2.646933e+06                                38.000   
+497                        4.245206e+05                                34.001   
+
+     VaR Percentage Distribution for Loss  \
+0                                0.007154   
+1                                0.007490   
+2                                0.010794   
+3                                0.000198   
+4                                0.006849   
+..                                    ...   
+493                              0.309764   
+494                              0.016876   
+495                              0.048368   
+496                              0.153972   
+497                              0.024694   
+
+     VaR Percentage Distribution for Counts  
+0                                  0.075476  
+1                                  0.058058  
+2                                  0.058058  
+3                                  0.046447  
+4                                  0.075476  
+..                                      ...  
+493                                0.168369  
+494                                0.156757  
+495                                0.191592  
+496                                0.220621  
+497                                0.197404  
+
+[498 rows x 11 columns]
+C:\Users\Himanshu Singh\AppData\Local\Temp\ipykernel_32220\1914804469.py:98: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  monte_carlo_results = df.groupby(['Year', 'Business Line', 'Event Type']).apply(monte_carlo_simulation).reset_index()
+# Reports
+from docx import Document
+
+# Create a new Document
+doc = Document()
+
+# Title
+doc.add_heading('Value at Risk (VaR) Analysis Report', level=1)
+
+# Introduction
+doc.add_heading('1. Introduction', level=2)
+doc.add_paragraph(
+    "This report provides a comprehensive analysis of Value at Risk (VaR) using multiple methods "
+    "to assess the financial risk associated with various events. The analysis utilizes a generated "
+    "dataset consisting of event types, business lines, and their associated net loss amounts over a "
+    "four-year period. The methods employed include the Empirical Method and Monte Carlo Simulation."
+)
+
+# Dataset Description
+doc.add_heading('2. Dataset Description', level=2)
+doc.add_paragraph(
+    "The dataset contains the following columns:\n"
+    "- Date: Randomly generated dates over a four-year period.\n"
+    "- Unique Event ID: Unique identifiers for each event.\n"
+    "- Event Type: Type of the event (e.g., Fraud, Cyber Attack).\n"
+    "- Business Line: Different lines of business affected by the events.\n"
+    "- Event Description: Descriptive text for the events.\n"
+    "- Net Loss Amount: Randomly generated loss amounts for each event.\n"
+)
+
+# Methodology
+doc.add_heading('3. Methodology', level=2)
+
+# Empirical Method
+doc.add_heading('3.1 Empirical Method', level=3)
+doc.add_paragraph(
+    "The empirical method calculates VaR by determining the 99.9 percentile of the net loss amounts "
+    "for each combination of business line and event type. This method provides a direct statistical "
+    "measure of risk based on historical loss data."
+)
+
+# Monte Carlo Simulation
+doc.add_heading('3.2 Monte Carlo Simulation', level=3)
+doc.add_paragraph(
+    "The Monte Carlo simulation method models event frequency using a Poisson distribution and "
+    "loss severity using a log-normal distribution. By simulating a large number of scenarios, it "
+    "calculates potential losses and provides a more dynamic view of risk."
+)
+
+# Results
+doc.add_heading('4. Results', level=2)
+doc.add_paragraph(
+    "The results of the VaR analysis are displayed in the table below. Each method's results are "
+    "compared across various categories."
+)
+
+# Create a sample results table for demonstration
+doc.add_heading('4.1 Summary of Results', level=3)
+results_table = doc.add_table(rows=1, cols=11)
+results_table.style = 'Table Grid'
+hdr_cells = results_table.rows[0].cells
+hdr_cells[0].text = 'Year'
+hdr_cells[1].text = 'Business Line'
+hdr_cells[2].text = 'Event Type'
+hdr_cells[3].text = 'VaR (99.9%) for Loss (Empirical)'
+hdr_cells[4].text = 'VaR (99.9%) for Counts (Empirical)'
+hdr_cells[5].text = 'VaR Percentage Distribution for Loss (Empirical)'
+hdr_cells[6].text = 'VaR Percentage Distribution for Counts (Empirical)'
+hdr_cells[7].text = 'VaR (99.9%) for Loss (Monte Carlo)'
+hdr_cells[8].text = 'VaR (99.9%) for Counts (Monte Carlo)'
+hdr_cells[9].text = 'VaR Percentage Distribution for Loss'
+hdr_cells[10].text = 'VaR Percentage Distribution for Counts'
+
+# Sample Data (to be replaced with actual results later)
+sample_data = [
+    ['2021', 'Retail', 'Fraud', '15000', '20', '15%', '10%', '18000', '22', '18%', '12%'],
+    ['2022', 'Corporate Banking', 'Cyber Attack', '20000', '25', '20%', '15%', '23000', '30', '25%', '18%'],
+]
+
+# Adding sample data to the table
+for row in sample_data:
+    cells = results_table.add_row().cells
+    for i, value in enumerate(row):
+        cells[i].text = str(value)
+
+# Conclusion
+doc.add_heading('5. Conclusion', level=2)
+doc.add_paragraph(
+    "This report presented a thorough analysis of Value at Risk using both the empirical method "
+    "and Monte Carlo simulation. The results provide insights into the risk profiles associated with "
+    "different business lines and event types. The Monte Carlo simulation method offers a more robust "
+    "framework for understanding potential losses under varying scenarios."
+)
+
+# Save the document
+doc_path = 'VaR_Analysis_Report.docx'
+doc.save(doc_path)
+
+doc_path
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[14], line 2
+      1 # Reports
+----> 2 from docx import Document
+      4 # Create a new Document
+      5 doc = Document()
+
+File ~\AppData\Local\Programs\Python\Python312\Lib\site-packages\docx.py:30
+     27 except ImportError:
+     28     TAGS = {}
+---> 30 from exceptions import PendingDeprecationWarning
+     31 from warnings import warn
+     33 import logging
+
+ModuleNotFoundError: No module named 'exceptions'
+!pip install --upgrade python-docx
+Collecting python-docx
+  Downloading python_docx-1.1.2-py3-none-any.whl.metadata (2.0 kB)
+Requirement already satisfied: lxml>=3.1.0 in c:\users\himanshu singh\appdata\local\programs\python\python312\lib\site-packages (from python-docx) (5.2.2)
+Requirement already satisfied: typing-extensions>=4.9.0 in c:\users\himanshu singh\appdata\local\programs\python\python312\lib\site-packages (from python-docx) (4.12.1)
+Downloading python_docx-1.1.2-py3-none-any.whl (244 kB)
+   ---------------------------------------- 0.0/244.3 kB ? eta -:--:--
+   ------ -------------------------------- 41.0/244.3 kB 653.6 kB/s eta 0:00:01
+   ---------------------------------------- 244.3/244.3 kB 3.0 MB/s eta 0:00:00
+Installing collected packages: python-docx
+Successfully installed python-docx-1.1.2
+[notice] A new release of pip is available: 24.0 -> 24.3.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+from docx import Document
+
+# Create a new Document
+doc = Document()
+
+# Title
+doc.add_heading('Value at Risk (VaR) Analysis Report', level=1)
+
+# Introduction
+doc.add_heading('1. Introduction', level=2)
+doc.add_paragraph(
+    "This report provides a comprehensive analysis of Value at Risk (VaR) using multiple methods "
+    "to assess the financial risk associated with various events. The analysis utilizes a generated "
+    "dataset consisting of event types, business lines, and their associated net loss amounts over a "
+    "four-year period. The methods employed include the Empirical Method and Monte Carlo Simulation."
+)
+
+# Dataset Description
+doc.add_heading('2. Dataset Description', level=2)
+doc.add_paragraph(
+    "The dataset contains the following columns:\n"
+    "- Date: Randomly generated dates over a four-year period.\n"
+    "- Unique Event ID: Unique identifiers for each event.\n"
+    "- Event Type: Type of the event (e.g., Fraud, Cyber Attack).\n"
+    "- Business Line: Different lines of business affected by the events.\n"
+    "- Event Description: Descriptive text for the events.\n"
+    "- Net Loss Amount: Randomly generated loss amounts for each event.\n"
+)
+
+# Methodology
+doc.add_heading('3. Methodology', level=2)
+
+# Empirical Method
+doc.add_heading('3.1 Empirical Method', level=3)
+doc.add_paragraph(
+    "The empirical method calculates VaR by determining the 99.9 percentile of the net loss amounts "
+    "for each combination of business line and event type. This method provides a direct statistical "
+    "measure of risk based on historical loss data."
+)
+
+# Monte Carlo Simulation
+doc.add_heading('3.2 Monte Carlo Simulation', level=3)
+doc.add_paragraph(
+    "The Monte Carlo simulation method models event frequency using a Poisson distribution and "
+    "loss severity using a log-normal distribution. By simulating a large number of scenarios, it "
+    "calculates potential losses and provides a more dynamic view of risk."
+)
+
+# Results
+doc.add_heading('4. Results', level=2)
+doc.add_paragraph(
+    "The results of the VaR analysis are displayed in the table below. Each method's results are "
+    "compared across various categories."
+)
+
+# Create a sample results table for demonstration
+doc.add_heading('4.1 Summary of Results', level=3)
+results_table = doc.add_table(rows=1, cols=11)
+results_table.style = 'Table Grid'
+hdr_cells = results_table.rows[0].cells
+hdr_cells[0].text = 'Year'
+hdr_cells[1].text = 'Business Line'
+hdr_cells[2].text = 'Event Type'
+hdr_cells[3].text = 'VaR (99.9%) for Loss (Empirical)'
+hdr_cells[4].text = 'VaR (99.9%) for Counts (Empirical)'
+hdr_cells[5].text = 'VaR Percentage Distribution for Loss (Empirical)'
+hdr_cells[6].text = 'VaR Percentage Distribution for Counts (Empirical)'
+hdr_cells[7].text = 'VaR (99.9%) for Loss (Monte Carlo)'
+hdr_cells[8].text = 'VaR (99.9%) for Counts (Monte Carlo)'
+hdr_cells[9].text = 'VaR Percentage Distribution for Loss'
+hdr_cells[10].text = 'VaR Percentage Distribution for Counts'
+
+# Sample Data (to be replaced with actual results later)
+sample_data = [
+    ['2021', 'Retail', 'Fraud', '15000', '20', '15%', '10%', '18000', '22', '18%', '12%'],
+    ['2022', 'Corporate Banking', 'Cyber Attack', '20000', '25', '20%', '15%', '23000', '30', '25%', '18%'],
+]
+
+# Adding sample data to the table
+for row in sample_data:
+    cells = results_table.add_row().cells
+    for i, value in enumerate(row):
+        cells[i].text = str(value)
+
+# Conclusion
+doc.add_heading('5. Conclusion', level=2)
+doc.add_paragraph(
+    "This report presented a thorough analysis of Value at Risk using both the empirical method "
+    "and Monte Carlo simulation. The results provide insights into the risk profiles associated with "
+    "different business lines and event types. The Monte Carlo simulation method offers a more robust "
+    "framework for understanding potential losses under varying scenarios."
+)
+
+# Save the document
+doc_path = 'VaR_Analysis_Report.docx'
+doc.save(doc_path)
+
+doc_path
+'VaR_Analysis_Report.docx'
+why this total_losses = simulated_counts * simulated_losses
+
+ChatGPT said: ChatGPT The line total_losses = simulated_counts * simulated_losses in the Monte Carlo simulation code combines the results of two independent simulations: the simulated counts of events and the simulated severity of those events. Here’s a detailed breakdown of why this operation is performed:
+
+Components of the Calculation Simulated Counts:
+
+The simulated_counts array contains the number of events that are simulated for each of the Monte Carlo iterations, which follows a Poisson distribution. Each entry in this array represents the predicted number of incidents (e.g., fraud cases, system failures) that might occur in a given time period based on the mean number of events from the original data. Simulated Losses:
+
+The simulated_losses array contains the estimated loss amount associated with each event, simulated using a log-normal distribution based on the historical loss data. Each entry in this array represents the potential financial impact of a single incident that occurs, assuming that each event has a random severity drawn from the log-normal distribution. Why Multiply Them? Total Loss Calculation:
+
+The operation simulated_counts * simulated_losses effectively calculates the total losses incurred for each simulation run. If, for example, one iteration of the simulation results in 3 events occurring (from simulated_counts) and the average severity of those events is $2000 (from simulated_losses), the total loss for that iteration would be: Total Loss
+Number of Events × Average Loss per Event
+3 × 2000
+6000 Total Loss=Number of Events×Average Loss per Event=3×2000=6000 Iteration Across All Simulations:
+
+By performing this multiplication for all iterations (i.e., across the num_simulations), you obtain an array of total losses corresponding to each simulated scenario, which can then be analyzed to calculate metrics like Value at Risk (VaR). Example Calculation Let's illustrate with a simple example:
+
+Assume the results of a single Monte Carlo iteration yielded:
+
+simulated_counts = 5 (5 events predicted) simulated_losses = [1000, 1500, 2000, 500, 3000] (potential losses per event) In this case, the total_losses would be calculated as:
+
+python Copy code total_losses = simulated_counts * simulated_losses If you computed this correctly (considering each event's loss):
+
+Total loss would aggregate to: 5 events × ( 1000 + 1500 + 2000 + 500 + 3000 )
+5 × 10000
+50000 5 events×(1000+1500+2000+500+3000)=5×10000=50000 However, if you averaged losses, say:
+
+Average loss per event
+( 1000 + 1500 + 2000 + 500 + 3000 ) / 5
+2000 =(1000+1500+2000+500+3000)/5=2000 Resulting in total losses = 5 × 2000
+10000 5×2000=10000 Conclusion The multiplication step is essential for combining the simulated frequency and severity of events, allowing for the assessment of potential total losses resulting from a combination of varying counts and severities. This is crucial for risk management and financial analysis, particularly when calculating metrics like Value at Risk (VaR) based on the worst-case financial scenarios derived from these simulations.
+
+import pandas as pd
+import numpy as np
+from scipy.stats import poisson, lognorm
+
+# Sample dataset
+data = pd.DataFrame({
+    'Business Line': ['Insurance', 'Insurance', 'Banking', 'Banking', 'Banking', 'Insurance'],
+    'Event Type': ['Fraud', 'Claims', 'Fraud', 'Operational', 'Claims', 'Operational'],
+    'Event Count': [10, 15, 8, 5, 20, 12],
+    'Loss Amount': [2000, 1500, 3000, 2500, 500, 1800]
+})
+
+# Function to calculate VaR
+def calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc, confidence_level=0.999, n_simulations=10000):
+    # Simulate event counts based on Poisson
+    simulated_event_counts = poisson.rvs(mu=frequency_lambda, size=n_simulations)
+    
+    # Simulate severity amounts based on Log-Normal
+    simulated_loss_amounts = lognorm.rvs(s=severity_shape, loc=severity_loc, scale=severity_scale, size=n_simulations)
+    
+    # Calculate total loss for each simulation
+    total_losses = simulated_event_counts * simulated_loss_amounts
+    
+    # Calculate the VaR at the specified confidence level
+    var_value = np.percentile(total_losses, confidence_level * 100)
+    return var_value
+
+# Store results
+var_results = []
+
+# Loop over each business line and event type
+for business_line in data['Business Line'].unique():
+    for event_type in data['Event Type'].unique():
+        # Filter the dataset for the current combination
+        subset = data[(data['Business Line'] == business_line) & (data['Event Type'] == event_type)]
+        
+        # Calculate frequency and severity parameters for the subset
+        frequency_lambda = subset['Event Count'].mean()
+        severity_shape, severity_loc, severity_scale = lognorm.fit(subset['Loss Amount'], floc=0)  # Fitting with floc=0 ensures loc=0
+        
+        # Calculate VaR for the subset
+        var_value = calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc)
+        
+        # Store the results
+        var_results.append({
+            'Business Line': business_line,
+            'Event Type': event_type,
+            'VaR_99.9%': var_value
+        })
+
+# Convert results to DataFrame for better readability
+var_results_df = pd.DataFrame(var_results)
+
+# Display results
+print(var_results_df)
+  Business Line   Event Type  VaR_99.9%
+0     Insurance        Fraud    42000.0
+1     Insurance       Claims    42001.5
+2     Insurance  Operational    43200.0
+3       Banking        Fraud    51003.0
+4       Banking       Claims    17500.0
+5       Banking  Operational    32500.0
+Output Explanation When you run this code, it will print a DataFrame that summarizes the calculated VaR for each combination of business line and event type. The resulting DataFrame (var_results_df) might look something like this (the actual values will depend on random simulations):
+
+Business Line Event Type VaR_99.9% Insurance Fraud 24500 Insurance Claims 21000 Banking Fraud 32000 Banking Operational 21000 Banking Claims 15000 Insurance Operational 18000 Interpretation VaR_99.9%: This value indicates the maximum expected loss over a specified period (e.g., one year) for the given business line and event type, with a confidence level of 99.9%. For instance, if the VaR for "Banking - Fraud" is 32,000, this means there is only a 0.1% chance that losses will exceed 32,000 during the period under consideration. Conclusion This example illustrates how to apply the calculate_var function to a dataset of operational risk events, simulate potential losses, and derive the Value at Risk for different combinations of business lines and event types. By using real-world data, you can assess financial risks and inform decision-making processes in risk management.
+
+# Here’s a complete documentation for the calculate_var function and the surrounding code context. This documentation outlines the purpose, parameters, usage, and provides an example for better understanding.
+
+# Value at Risk (VaR) Calculation Documentation
+# Overview
+# The calculate_var function simulates operational losses based on event counts and loss amounts, calculating the Value at Risk (VaR) at a specified confidence level. VaR provides a statistical measure of the potential loss in value of an asset or portfolio over a defined period for a given confidence interval.
+
+# Purpose
+# The primary goal of this function is to:
+
+# Simulate potential loss scenarios using the Poisson and Log-Normal distributions.
+# Calculate the maximum expected loss (VaR) over a specified confidence level (e.g., 99.9%) for different business lines and event types.
+# Function Definition
+# python
+# Copy code
+# def calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc, confidence_level=0.999, n_simulations=10000):
+# Parameters
+# frequency_lambda (float): The average rate (λ) of events occurring, used in the Poisson distribution.
+
+# severity_shape (float): Shape parameter for the Log-Normal distribution (fitted from historical loss data).
+
+# severity_scale (float): Scale parameter for the Log-Normal distribution (fitted from historical loss data).
+
+# severity_loc (float): Location parameter for the Log-Normal distribution (fitted from historical loss data).
+
+# confidence_level (float, optional): The confidence level for the VaR calculation. Default is 0.999 (99.9%).
+
+# n_simulations (int, optional): The number of simulations to run. Default is 10,000.
+
+# Returns
+# var_value (float): The calculated VaR value at the specified confidence level, representing the maximum expected loss over the specified period.
+# Implementation Example
+# Required Libraries
+# To use the function, ensure the following libraries are imported:
+
+# python
+# Copy code
+# import pandas as pd
+# import numpy as np
+# from scipy.stats import poisson, lognorm
+# Sample Dataset
+# Create a sample dataset representing operational loss events:
+
+# python
+# Copy code
+# data = pd.DataFrame({
+#     'Business Line': ['Insurance', 'Insurance', 'Banking', 'Banking', 'Banking', 'Insurance'],
+#     'Event Type': ['Fraud', 'Claims', 'Fraud', 'Operational', 'Claims', 'Operational'],
+#     'Event Count': [10, 15, 8, 5, 20, 12],
+#     'Loss Amount': [2000, 1500, 3000, 2500, 500, 1800]
+# })
+# Calculate Frequency and Severity Parameters
+# Loop through each unique business line and event type, filtering the dataset and calculating parameters:
+
+# python
+# Copy code
+# var_results = []
+
+# for business_line in data['Business Line'].unique():
+#     for event_type in data['Event Type'].unique():
+#         # Filter the dataset for the current combination
+#         subset = data[(data['Business Line'] == business_line) & (data['Event Type'] == event_type)]
+        
+#         # Calculate frequency and severity parameters for the subset
+#         frequency_lambda = subset['Event Count'].mean()
+#         severity_shape, severity_loc, severity_scale = lognorm.fit(subset['Loss Amount'], floc=0)
+        
+#         # Calculate VaR for the subset
+#         var_value = calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc)
+        
+#         # Store the results
+#         var_results.append({
+#             'Business Line': business_line,
+#             'Event Type': event_type,
+#             'VaR_99.9%': var_value
+#         })
+# Convert Results to DataFrame
+# Once all calculations are done, convert the results to a DataFrame for readability:
+
+# python
+# Copy code
+# var_results_df = pd.DataFrame(var_results)
+
+# # Display results
+# print(var_results_df)
+# Complete Example Code
+# python
+# Copy code
+# import pandas as pd
+# import numpy as np
+# from scipy.stats import poisson, lognorm
+
+# # Sample dataset
+# data = pd.DataFrame({
+#     'Business Line': ['Insurance', 'Insurance', 'Banking', 'Banking', 'Banking', 'Insurance'],
+#     'Event Type': ['Fraud', 'Claims', 'Fraud', 'Operational', 'Claims', 'Operational'],
+#     'Event Count': [10, 15, 8, 5, 20, 12],
+#     'Loss Amount': [2000, 1500, 3000, 2500, 500, 1800]
+# })
+
+# # Function to calculate VaR
+# def calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc, confidence_level=0.999, n_simulations=10000):
+#     # Simulate event counts based on Poisson
+#     simulated_event_counts = poisson.rvs(mu=frequency_lambda, size=n_simulations)
+    
+#     # Simulate severity amounts based on Log-Normal
+#     simulated_loss_amounts = lognorm.rvs(s=severity_shape, loc=severity_loc, scale=severity_scale, size=n_simulations)
+    
+#     # Calculate total loss for each simulation
+#     total_losses = simulated_event_counts * simulated_loss_amounts
+    
+#     # Calculate the VaR at the specified confidence level
+#     var_value = np.percentile(total_losses, confidence_level * 100)
+#     return var_value
+
+# # Store results
+# var_results = []
+
+# # Loop over each business line and event type
+# for business_line in data['Business Line'].unique():
+#     for event_type in data['Event Type'].unique():
+#         # Filter the dataset for the current combination
+#         subset = data[(data['Business Line'] == business_line) & (data['Event Type'] == event_type)]
+        
+#         # Calculate frequency and severity parameters for the subset
+#         frequency_lambda = subset['Event Count'].mean()
+#         severity_shape, severity_loc, severity_scale = lognorm.fit(subset['Loss Amount'], floc=0)
+        
+#         # Calculate VaR for the subset
+#         var_value = calculate_var(frequency_lambda, severity_shape, severity_scale, severity_loc)
+        
+#         # Store the results
+#         var_results.append({
+#             'Business Line': business_line,
+#             'Event Type': event_type,
+#             'VaR_99.9%': var_value
+#         })
+
+# # Convert results to DataFrame for better readability
+# var_results_df = pd.DataFrame(var_results)
+
+# # Display results
+# print(var_results_df)
+# Output Interpretation
+# The output DataFrame var_results_df will contain the VaR for each combination of business line and event type, allowing for an understanding of potential financial risks associated with different operational events. The VaR_99.9% value indicates the maximum expected loss at a confidence level of 99.9%.
+
+# Conclusion
+# This documentation provides a complete understanding of how to calculate the Value at Risk (VaR) for operational losses using simulated data. The approach utilizes statistical distributions to model potential risks, supporting effective risk management strategies in financial environments.
+
+# This documentation can serve as a reference for future implementation or for onboarding new team members who need to understand how the VaR calculations are performed within the code.
