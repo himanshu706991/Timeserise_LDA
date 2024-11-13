@@ -871,3 +871,81 @@ if subset['Net Loss Amount'].iloc[i] > subset['Net Loss Amount'].iloc[i-1] and s
 Labeling: For each spike, the value is annotated with plt.text(). The labels are colored red to highlight the spikes, and the value is formatted in scientific notation ({:.2e}) for easier reading of financial figures.
 Positioning: The labels are placed slightly below the spike (va='bottom') and horizontally centered above the spike (ha='center').
 This will now show the line chart with labels at the high spikes, making it easy to identify unusual peaks in the data.
+##
+Here’s a simplified version of the code for labeling the high spikes. Instead of checking the surrounding points explicitly, this simplified version uses a threshold to identify significant spikes. If the spike is greater than a certain percentage (e.g., 50%) higher than the previous point, it will be labeled.
+
+Simplified Code:
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Aggregate data by month and business line for plotting
+expanded_data['Month'] = expanded_data['Date'].dt.to_period('M')
+monthly_losses = expanded_data.groupby(['Month', 'Business Line'])['Net Loss Amount'].sum().reset_index()
+monthly_losses['Month'] = monthly_losses['Month'].dt.to_timestamp()  # Convert to timestamp for plotting
+
+# Plot line chart of Net Loss Amount over time by Business Line
+plt.figure(figsize=(14, 8))
+for line in business_lines:
+    subset = monthly_losses[monthly_losses['Business Line'] == line]
+    plt.plot(subset['Month'], subset['Net Loss Amount'], marker='o', label=line)
+
+    # Find and label the high spikes (threshold of 50% higher than previous point)
+    for i in range(1, len(subset)):
+        if subset['Net Loss Amount'].iloc[i] > 1.5 * subset['Net Loss Amount'].iloc[i-1]:  # 50% higher than the previous point
+            plt.text(subset['Month'].iloc[i], subset['Net Loss Amount'].iloc[i],
+                     f"{subset['Net Loss Amount'].iloc[i]:.2e}", color='red', fontsize=9, ha='center', va='bottom')
+
+# Add labels and title
+plt.title('Monthly Net Loss Amount Over Time by Business Line')
+plt.xlabel('Date')
+plt.ylabel('Net Loss Amount')
+plt.yscale('log')  # Log scale due to skewness in financial data
+plt.legend(title='Business Line')
+
+# Show plot
+plt.tight_layout()
+plt.show()
+Key Changes:
+Spike Detection: Instead of checking if the current value is greater than the previous and next value, I used a simpler approach where the spike is detected if the current point is more than 50% higher than the previous point:
+
+python
+Copy code
+if subset['Net Loss Amount'].iloc[i] > 1.5 * subset['Net Loss Amount'].iloc[i-1]:
+This means the value must be 1.5 times (or 50% higher) than the previous point to be considered a spike.
+
+Labeling: The code now directly labels any point that meets the threshold condition using plt.text().
+
+This should simplify the logic while still identifying and labeling the high spikes in the dataset.
