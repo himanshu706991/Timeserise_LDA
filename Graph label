@@ -949,3 +949,98 @@ This means the value must be 1.5 times (or 50% higher) than the previous point t
 Labeling: The code now directly labels any point that meets the threshold condition using plt.text().
 
 This should simplify the logic while still identifying and labeling the high spikes in the dataset.
+
+
+#####################33
+i need spkies from threshold more than mean
+
+ChatGPT said:
+ChatGPT
+To detect spikes based on a threshold greater than the mean of the data, we can modify the code to compute the mean of the Net Loss Amount for each business line and then label points that exceed a specified threshold, for example, 150% of the mean.
+
+Simplified Code with Spike Detection Based on Mean:
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Aggregate data by month and business line for plotting
+expanded_data['Month'] = expanded_data['Date'].dt.to_period('M')
+monthly_losses = expanded_data.groupby(['Month', 'Business Line'])['Net Loss Amount'].sum().reset_index()
+monthly_losses['Month'] = monthly_losses['Month'].dt.to_timestamp()  # Convert to timestamp for plotting
+
+# Plot line chart of Net Loss Amount over time by Business Line
+plt.figure(figsize=(14, 8))
+for line in business_lines:
+    subset = monthly_losses[monthly_losses['Business Line'] == line]
+    plt.plot(subset['Month'], subset['Net Loss Amount'], marker='o', label=line)
+
+    # Calculate mean of 'Net Loss Amount' for the current business line
+    mean_loss = subset['Net Loss Amount'].mean()
+
+    # Find and label the high spikes (threshold more than 150% of the mean)
+    for i in range(1, len(subset)):
+        if subset['Net Loss Amount'].iloc[i] > 1.5 * mean_loss:  # 150% of the mean value
+            plt.text(subset['Month'].iloc[i], subset['Net Loss Amount'].iloc[i],
+                     f"{subset['Net Loss Amount'].iloc[i]:.2e}", color='red', fontsize=9, ha='center', va='bottom')
+
+# Add labels and title
+plt.title('Monthly Net Loss Amount Over Time by Business Line')
+plt.xlabel('Date')
+plt.ylabel('Net Loss Amount')
+plt.yscale('log')  # Log scale due to skewness in financial data
+plt.legend(title='Business Line')
+
+# Show plot
+plt.tight_layout()
+plt.show()
+Key Changes:
+Mean Calculation: For each business line, the mean of the Net Loss Amount is calculated:
+
+python
+Copy code
+mean_loss = subset['Net Loss Amount'].mean()
+Threshold for Spike Detection: The threshold is set to 150% of the mean (1.5 * mean_loss). Any Net Loss Amount above this threshold is considered a spike:
+
+python
+Copy code
+if subset['Net Loss Amount'].iloc[i] > 1.5 * mean_loss:
+Labeling: If a spike is detected, it will be labeled on the graph with the actual Net Loss Amount, formatted in scientific notation:
+
+python
+Copy code
+plt.text(subset['Month'].iloc[i], subset['Net Loss Amount'].iloc[i],
+         f"{subset['Net Loss Amount'].iloc[i]:.2e}", color='red', fontsize=9, ha='center', va='bottom')
+Outcome:
+The line chart will display the Net Loss Amount over time, with spikes labeled where the loss amount is more than 150% of the mean value for the respective business line.
