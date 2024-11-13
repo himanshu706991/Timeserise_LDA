@@ -574,3 +574,300 @@ Explanation:
 value_counts calculates the count of each category.
 sns.barplot creates a bar plot from these counts.
 plt.text adds labels above each bar, positioning them using the index and value of each bar. The ha='center' and va='bottom' align the text correctly on the bars.
+
+
+
+############################################################
+To create a graph of Net Loss by Event Counts and Business Line, we'll use a scatter plot with Event Count on the x-axis, Net Loss Amount on the y-axis, and different colors for each Business Line. This visualization will help you see the relationship between event frequency and the associated financial impact, segmented by business line.
+
+Here’s the complete code for generating the dataset and plotting:
+
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Plot Net Loss by Event Counts and Business Line
+plt.figure(figsize=(12, 8))
+sns.scatterplot(data=expanded_data, x='Event Count', y='Net Loss Amount', hue='Business Line', alpha=0.6)
+plt.yscale('log')  # Log scale for better visualization if values are skewed
+plt.title('Net Loss Amount by Event Counts and Business Line')
+plt.xlabel('Event Count')
+plt.ylabel('Net Loss Amount')
+
+# Display plot
+plt.legend(title='Business Line')
+plt.show()
+Explanation
+Dataset: Generates a synthetic dataset with event count and loss amount per business line.
+Plot: Uses a scatter plot to show each Business Line in a different color.
+Log Scale: Applied on the y-axis for Net Loss Amount if the values are highly skewed, as often seen with financial loss data.
+
+
+
+
+
+You said:
+i need line chart
+ChatGPT said:
+ChatGPT
+A line chart is suitable for visualizing trends over time. We can modify the previous code to plot a line chart of Net Loss Amount over time, grouped by Business Line.
+
+Here's the code to create a time-series line chart that shows how net losses change over time for each business line:
+
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Aggregate data by month and business line for plotting
+expanded_data['Month'] = expanded_data['Date'].dt.to_period('M')
+monthly_losses = expanded_data.groupby(['Month', 'Business Line'])['Net Loss Amount'].sum().reset_index()
+monthly_losses['Month'] = monthly_losses['Month'].dt.to_timestamp()  # Convert to timestamp for plotting
+
+# Plot line chart of Net Loss Amount over time by Business Line
+plt.figure(figsize=(14, 8))
+for line in business_lines:
+    subset = monthly_losses[monthly_losses['Business Line'] == line]
+    plt.plot(subset['Month'], subset['Net Loss Amount'], marker='o', label=line)
+
+# Add labels and title
+plt.title('Monthly Net Loss Amount Over Time by Business Line')
+plt.xlabel('Date')
+plt.ylabel('Net Loss Amount')
+plt.yscale('log')  # Log scale due to skewness in financial data
+plt.legend(title='Business Line')
+
+# Show plot
+plt.show()
+Explanation
+Data Aggregation: The data is aggregated by Month and Business Line to calculate the total Net Loss Amount per month.
+Line Chart: A line is plotted for each business line, showing the trend of net loss over time.
+Log Scale: Applied on the y-axis to better handle skewed loss data.
+This line chart will display monthly net loss trends for each business line over the specified date range. Each line represents a different business line, with markers at each month for clarity.
+
+
+
+
+
+
+You said:
+add label also
+ChatGPT said:
+ChatGPT
+To add labels on the line chart for specific data points, you can annotate each line with the corresponding values at key points (e.g., for the last data point or for notable peaks). Here's the updated code with labels added to the chart:
+
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Aggregate data by month and business line for plotting
+expanded_data['Month'] = expanded_data['Date'].dt.to_period('M')
+monthly_losses = expanded_data.groupby(['Month', 'Business Line'])['Net Loss Amount'].sum().reset_index()
+monthly_losses['Month'] = monthly_losses['Month'].dt.to_timestamp()  # Convert to timestamp for plotting
+
+# Plot line chart of Net Loss Amount over time by Business Line
+plt.figure(figsize=(14, 8))
+for line in business_lines:
+    subset = monthly_losses[monthly_losses['Business Line'] == line]
+    plt.plot(subset['Month'], subset['Net Loss Amount'], marker='o', label=line)
+
+    # Adding labels for the last data point of each line
+    last_point = subset.iloc[-1]  # Get the last data point
+    plt.text(last_point['Month'], last_point['Net Loss Amount'], f"{last_point['Net Loss Amount']:.2e}",
+             color='black', fontsize=9, ha='left', va='bottom')
+
+# Add labels and title
+plt.title('Monthly Net Loss Amount Over Time by Business Line')
+plt.xlabel('Date')
+plt.ylabel('Net Loss Amount')
+plt.yscale('log')  # Log scale due to skewness in financial data
+plt.legend(title='Business Line')
+
+# Show plot
+plt.tight_layout()
+plt.show()
+Explanation of Changes:
+Labeling: I've added labels on the last data point of each line (last_point = subset.iloc[-1]) by using plt.text(). This ensures that the value at the last data point of each business line is shown on the chart.
+Formatting: The value is displayed in scientific notation ({last_point['Net Loss Amount']:.2e}) for easier reading of financial data.
+Positioning: The text is positioned using ha='left' (horizontal alignment) and va='bottom' (vertical alignment) to ensure that the labels don't overlap with the lines.
+This will show the trend of net loss over time and display the net loss values at the last point of each business line.
+
+
+
+
+
+
+You said:
+add label on high spikes
+ChatGPT said:
+ChatGPT
+To add labels to high spikes in the line chart, you can find the local maxima (spikes) by detecting where the net loss amounts are significantly higher than the surrounding data points. These spikes can then be annotated with labels. Below is the updated code with annotations for high spikes (local maxima):
+
+Updated Code:
+python
+Copy code
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Parameters for expanded dataset
+n_samples = 10000  # Number of records
+start_date = datetime(2015, 1, 1)
+end_date = datetime(2024, 12, 31)
+business_lines = ["Retail Banking", "Corporate Banking", "Wealth Management"]
+event_types = ["Fraud", "System Failure", "Legal Risk", "External Fraud", "Process Failure"]
+
+# Generate random dates within the range
+date_range = pd.date_range(start=start_date, end=end_date, periods=n_samples)
+
+# Generate random business lines, event types, event counts, and loss amounts
+business_line_data = np.random.choice(business_lines, size=n_samples)
+event_type_data = np.random.choice(event_types, size=n_samples)
+event_count_data = np.random.poisson(lam=5, size=n_samples)  # Poisson distribution for frequency
+loss_amount_data = np.random.lognormal(mean=10, sigma=2, size=n_samples)  # Log-Normal for severity
+
+# Create DataFrame
+expanded_data = pd.DataFrame({
+    'Date': date_range,
+    'Business Line': business_line_data,
+    'Event Type': event_type_data,
+    'Event Count': event_count_data,
+    'Net Loss Amount': loss_amount_data
+})
+
+# Aggregate data by month and business line for plotting
+expanded_data['Month'] = expanded_data['Date'].dt.to_period('M')
+monthly_losses = expanded_data.groupby(['Month', 'Business Line'])['Net Loss Amount'].sum().reset_index()
+monthly_losses['Month'] = monthly_losses['Month'].dt.to_timestamp()  # Convert to timestamp for plotting
+
+# Plot line chart of Net Loss Amount over time by Business Line
+plt.figure(figsize=(14, 8))
+for line in business_lines:
+    subset = monthly_losses[monthly_losses['Business Line'] == line]
+    plt.plot(subset['Month'], subset['Net Loss Amount'], marker='o', label=line)
+
+    # Find and label the high spikes
+    for i in range(1, len(subset) - 1):  # Skip first and last points
+        if subset['Net Loss Amount'].iloc[i] > subset['Net Loss Amount'].iloc[i-1] and subset['Net Loss Amount'].iloc[i] > subset['Net Loss Amount'].iloc[i+1]:
+            plt.text(subset['Month'].iloc[i], subset['Net Loss Amount'].iloc[i],
+                     f"{subset['Net Loss Amount'].iloc[i]:.2e}", color='red', fontsize=9, ha='center', va='bottom')
+
+# Add labels and title
+plt.title('Monthly Net Loss Amount Over Time by Business Line')
+plt.xlabel('Date')
+plt.ylabel('Net Loss Amount')
+plt.yscale('log')  # Log scale due to skewness in financial data
+plt.legend(title='Business Line')
+
+# Show plot
+plt.tight_layout()
+plt.show()
+Explanation of Changes:
+Spike Detection: I've added a loop to identify local maxima (spikes) by checking if the current point is greater than the previous and the next point:
+python
+Copy code
+if subset['Net Loss Amount'].iloc[i] > subset['Net Loss Amount'].iloc[i-1] and subset['Net Loss Amount'].iloc[i] > subset['Net Loss Amount'].iloc[i+1]:
+Labeling: For each spike, the value is annotated with plt.text(). The labels are colored red to highlight the spikes, and the value is formatted in scientific notation ({:.2e}) for easier reading of financial figures.
+Positioning: The labels are placed slightly below the spike (va='bottom') and horizontally centered above the spike (ha='center').
+This will now show the line chart with labels at the high spikes, making it easy to identify unusual peaks in the data.
